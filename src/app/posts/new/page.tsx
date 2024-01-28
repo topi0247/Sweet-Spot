@@ -13,14 +13,29 @@ type User = {
 };
 
 const NewPost = () => {
-  const router = useRouter();
-  if (auth.currentUser === null) {
-    router.push(RoutesPath.Login);
-  }
-
   const [url, setUrl] = useState("");
   const [comment, setComment] = useState("");
   const [user, setUser] = useState({} as User);
+  const router = useRouter();
+
+  const checkAuth = async () => {
+    if (auth.currentUser && auth.currentUser.email) {
+      const result = await getUserByEmail(auth.currentUser.email);
+      if (result) {
+        setUser({
+          id: result.id,
+          uuid: result.uuid,
+          displayName: result.displayName,
+        });
+      }
+    } else {
+      router.push(RoutesPath.Login);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   const getUser = async () => {
     if (auth.currentUser?.email) {

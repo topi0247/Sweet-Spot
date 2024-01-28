@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Post } from "@/types";
 import { getOGP } from "@/common/getOgp";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
 type PostCardProps = {
   post: Post;

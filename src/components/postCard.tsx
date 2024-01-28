@@ -31,24 +31,22 @@ const PostCard = ({ post }: PostCardProps) => {
 
   return (
     <section className="text-orange-900 body-font w-full h-80">
-      <div className="card h-full bg-orange-200 shadow-xl rounded-none">
+      <div className="card h-full bg-orange-200 shadow-xl rounded-none hover:translate-y-2 hover:shadow-none transition-all">
         <figure>
-          <Link href={url} target="_blank">
-            <img src={ogp.image} alt={ogp.title} />
-          </Link>
+          <img src={ogp.image} alt={ogp.title} />
         </figure>
         <div className="card-body p-5">
-          <h2 className="card-title">{title}</h2>
-          <p>{postedBy}</p>
-          <div className="flex justify-between">
-            <p>{comment}</p>
-            <Link href={url} className="text-xs">
-              <FontAwesomeIcon
-                className="mr-1"
-                icon={faArrowUpRightFromSquare}
-              />
-              ページへ飛ぶ
+          <h3>
+            <Link
+              href={url}
+              className="border-solid border-b-2 border-orange-950"
+            >
+              {ogp.title}
             </Link>
+          </h3>
+          <p>{postedBy}</p>
+          <div className="flex justify-between items-center">
+            <p>{comment}</p>
           </div>
         </div>
       </div>

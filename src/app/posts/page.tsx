@@ -22,16 +22,16 @@ const Posts = () => {
     const end = page * postsAmount + (postsAmount - 1);
     const fetchedPosts = await getPosts([start, end]);
     if (fetchedPosts) {
-      console.log(fetchedPosts);
       setPosts([]);
       const newPosts = fetchedPosts.map((post) => ({
         id: post.id,
         uuid: post.uuid,
         comment: post.comment,
         url: post.url,
-        userName: post.user_id.displayName,
+        user_id: { displayName: post.user_id.displayName },
         created_at: post.created_at,
       }));
+      console.log(newPosts);
       setPosts((prevPosts) => [...prevPosts, ...newPosts]);
     }
   };

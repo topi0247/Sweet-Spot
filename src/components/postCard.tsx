@@ -19,7 +19,7 @@ type OgpData = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const [ogp, setOgp] = useState({} as OgpData);
-  const { id, uuid, comment, url, userName, created_at } = post;
+  const { id, uuid, comment, url, user_id, created_at } = post;
 
   useEffect(() => {
     const getMetadata = async () => {
@@ -54,7 +54,7 @@ const PostCard = ({ post }: PostCardProps) => {
           <div className="flex flex-col gap-1">
             <p className="text-sm">
               <FontAwesomeIcon icon={faUser} className="mr-1" />
-              {userName}
+              {user_id.displayName}
             </p>
             <p>{comment}</p>
             <p className="text-xs text-end">

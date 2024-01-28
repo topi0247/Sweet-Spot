@@ -122,19 +122,12 @@ export async function getPosts(range: [number, number]) {
       .from("posts")
       .select(
         `
-        id,
-        uuid,
-        url,
-        comment,
-        created_at,
-        user_id (
-          displayName
-        )
-      `
+      *,
+      user_id: user_id(*)
+    `
       )
       .range(range[0], range[1])
       .order("created_at", { ascending: false });
-
     if (error) {
       throw error;
     }

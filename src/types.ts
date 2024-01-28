@@ -3,7 +3,7 @@ export type Post = {
   comment: string;
   uuid: string;
   url: string;
-  userName: string;
+  user_id: { displayName: string };
   created_at: string;
 };
 

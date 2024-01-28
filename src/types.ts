@@ -1,11 +1,10 @@
 export type Post = {
   id: number;
-  uuid: string;
-  title: string;
   comment: string;
+  uuid: string;
   url: string;
-  postedBy: string;
-  tags: string[];
+  userName: string;
+  created_at: string;
 };
 
 export type User = {

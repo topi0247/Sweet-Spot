@@ -123,6 +123,7 @@ export async function getPosts(range: [number, number]) {
       .select(
         `
         id,
+        uuid,
         url,
         comment,
         created_at,

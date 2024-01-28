@@ -1,7 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = process.env.SUPABASE_URL!;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY!;
+const SUPABASE_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.NEXT_PUBLIC_SUPABASE_URL!
+    : process.env.SUPABASE_URL!;
+const SUPABASE_ANON_KEY =
+  process.env.NODE_ENV === "development"
+    ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    : process.env.SUPABASE_ANON_KEY!;
+console.log(process.env.SUPABASE_URL);
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: false },
@@ -41,6 +48,24 @@ export async function registerUser(displayName: string, email: string) {
     }
   } catch (error: any) {
     console.error("データの登録中にエラーが発生しました:", error.message);
+    throw error;
+  }
+}
+
+export async function getUser(email: string) {
+  try {
+    const { data, error } = await supabase
+      .from("users")
+      .select("email")
+      .eq("email", email);
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error("ユーザー検索中にエラーが発生しました:", error.message);
     throw error;
   }
 }

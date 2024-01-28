@@ -6,6 +6,7 @@ import { auth } from "@/utils/firebase";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { getUser } from "@/utils/supabaseClient";
 
 const Headers = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +27,8 @@ const Headers = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        const userData = getUser(auth.currentUser?.email || "");
+        console.log(userData);
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);

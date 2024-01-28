@@ -1,7 +1,10 @@
-import React from "react";
+"use client";
 
-const Login = () => {
-  return <div>Login</div>;
+import React from "react";
+import Login from "@/components/login";
+
+const LoginPage = () => {
+  return <Login />;
 };
 
-export default Login;
+export default LoginPage;

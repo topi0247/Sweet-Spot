@@ -6,11 +6,12 @@ import { auth } from "@/utils/firebase";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getUser } from "@/utils/supabaseClient";
+import { getUserByEmail } from "@/utils/supabaseClient";
+import { User } from "@/types";
 
 const Headers = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [uuid, setUuid] = useState("");
+  const [user, setUser] = useState({} as User);
 
   const router = useRouter();
   const logout = async () => {
@@ -21,14 +22,13 @@ const Headers = () => {
       })
       .catch((error) => {
         console.log(error);
+        // TODO: エラー処理
       });
   };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        const userData = getUser(auth.currentUser?.email || "");
-        console.log(userData);
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
@@ -36,6 +36,20 @@ const Headers = () => {
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn && auth.currentUser?.email) {
+      getUserByEmail(auth.currentUser.email).then((result) => {
+        if (result) {
+          setUser({
+            id: result.id,
+            uuid: result.uuid,
+            displayName: result.displayName,
+          });
+        }
+      });
+    }
+  }, [isLoggedIn]);
 
   return (
     <header className="flex justify-between items-center container mx-auto my-10 border-b border-orange-900">
@@ -57,7 +71,7 @@ const Headers = () => {
               <li>
                 <Link
                   className="p-4 hover:bg-slate-50 transition-all"
-                  href={RoutesPath.Signup}
+                  href={RoutesPath.Logout}
                 >
                   新規登録
                 </Link>
@@ -84,7 +98,7 @@ const Headers = () => {
               <li>
                 <Link
                   className="p-4 hover:bg-slate-50 transition-all"
-                  href={`RoutesPath.MyPage`}
+                  href={`${RoutesPath.MyPage}+${user?.uuid}`}
                 >
                   マイページ
                 </Link>

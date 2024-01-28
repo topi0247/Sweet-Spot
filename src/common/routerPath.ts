@@ -3,10 +3,10 @@ const RoutesPath = {
   Posts: "/posts",
   Post: "/posts/:id",
   CreatePost: "/posts/new",
-  EditPost: "/posts/:id/edit",
+  EditPost: "/posts/:uuid/edit",
   Login: "/login",
   Signup: "/users/new",
-  MyPage: "/users/:id",
+  MyPage: "/users/",
 };
 
 export default RoutesPath;

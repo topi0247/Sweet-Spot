@@ -5,19 +5,34 @@ import RoutesPath from "@/common/routerPath";
 import { auth } from "@/utils/firebase";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Headers = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [uuid, setUuid] = useState("");
+
   const router = useRouter();
-  const logout = () => {
-    signOut(auth)
+  const logout = async () => {
+    await signOut(auth)
       .then(() => {
-        console.log("ログアウトしました");
         router.push(RoutesPath.Login);
+        setIsLoggedIn(false);
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <header className="flex justify-between items-center container mx-auto my-10 border-b border-orange-900">
@@ -34,7 +49,7 @@ const Headers = () => {
               投稿一覧
             </Link>
           </li>
-          {auth.currentUser === null ? (
+          {!isLoggedIn ? (
             <>
               <li>
                 <Link
@@ -66,7 +81,7 @@ const Headers = () => {
               <li>
                 <Link
                   className="p-4 hover:bg-slate-50 transition-all"
-                  href={RoutesPath.MyPage}
+                  href={`RoutesPath.MyPage`}
                 >
                   マイページ
                 </Link>
@@ -74,7 +89,7 @@ const Headers = () => {
               <li>
                 <button
                   className="p-4 hover:bg-slate-50 transition-all"
-                  onClick={() => logout}
+                  onClick={() => logout()}
                 >
                   ログアウト
                 </button>

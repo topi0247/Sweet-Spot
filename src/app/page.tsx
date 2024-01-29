@@ -1,5 +1,3 @@
-const Home = () => {
-  return <div></div>;
-};
-
-export default Home;
+export default async function Home() {
+  return <div>Home</div>;
+}

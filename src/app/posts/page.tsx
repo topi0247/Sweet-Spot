@@ -31,7 +31,6 @@ const Posts = () => {
         user_id: { displayName: post.user_id.displayName },
         created_at: post.created_at,
       }));
-      console.log(newPosts);
       setPosts((prevPosts) => [...prevPosts, ...newPosts]);
     }
   };

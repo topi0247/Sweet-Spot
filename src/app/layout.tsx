@@ -3,7 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Headers from "@/components/header";
 import Footers from "@/components/footer";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className="flex flex-col min-h-screen">
           <Headers />
-          <main className="flex-grow container mx-auto">{children}</main>
+          <Suspense fallback={<Loading />}>
+            <main className="flex-grow container mx-auto">{children}</main>
+          </Suspense>
           <Footers />
         </div>
       </body>

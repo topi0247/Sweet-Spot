@@ -49,8 +49,7 @@ export async function registerUser(displayName: string, email: string) {
       return data;
     }
   } catch (error: any) {
-    console.error("データの登録中にエラーが発生しました:", error.message);
-    throw error;
+    return { error, status: 500 };
   }
 }
 
@@ -72,8 +71,7 @@ export async function getUserByEmail(email: string) {
 
     return user[0];
   } catch (error: any) {
-    console.error("ユーザー検索中にエラーが発生しました:", error.message);
-    throw error;
+    return { error, status: 500 };
   }
 }
 
@@ -92,11 +90,9 @@ export async function getUserById(id: string) {
     if (user === null) {
       return null;
     }
-    console.log(user[0]);
     return user[0];
   } catch (error: any) {
-    console.error("ユーザー検索中にエラーが発生しました:", error.message);
-    throw error;
+    return { error, status: 500 };
   }
 }
 
@@ -104,24 +100,53 @@ export async function postPost(
   url: string,
   comment: string,
   id: number,
-  genre: string
+  genre: string,
+  tags: string[],
+  moreComment: string
 ) {
   try {
-    const { data, error } = await supabase.from("posts").insert([
-      {
-        url,
-        comment,
-        user_id: id,
-        genre,
-      },
-    ]);
+    // データの登録
+    const { data, error } = await supabase
+      .from("posts")
+      .insert([
+        {
+          url,
+          comment,
+          user_id: id,
+          genre,
+          more_comment: moreComment,
+        },
+      ])
+      .select();
     if (error) {
-      throw error;
+      return { error, status: 500 };
     }
-    return data;
+
+    // タグの登録と取得
+    const tagIds = await Promise.all(
+      tags
+        .map(async (tagName) => await getTagId(tagName))
+        .filter((tagId) => tagId !== null)
+    );
+    console.log(tagIds);
+    const postId = data ? (data[0] as { id: number }).id : null;
+
+    // 中間テーブルに登録
+    if (tags.length > 0 && postId !== null) {
+      const { error: tagError } = await supabase.from("post_tags").insert(
+        tagIds.map((tagId) => ({
+          post_id: postId,
+          tag_id: tagId,
+        }))
+      );
+      if (tagError) {
+        return { error, status: 500 };
+      }
+    }
+
+    return { data, status: 200 };
   } catch (error: any) {
-    console.error("データの登録中にエラーが発生しました:", error.message);
-    throw error;
+    return { error, status: 500 };
   }
 }
 
@@ -133,19 +158,50 @@ export async function getPosts(range: [number, number]) {
       .range(range[0], range[1])
       .order("created_at", { ascending: false });
     if (error) {
-      throw error;
+      return { error, status: 500 };
     }
 
     const { data: countData, error: countError } = await supabase
       .from("posts")
       .select("id", { count: "exact" });
     if (countError) {
-      throw countError;
+      return { error, status: 500 };
     }
 
     return { data, count: countData.length };
   } catch (error: any) {
-    console.error("データの取得中にエラーが発生しました:", error.message);
-    throw error;
+    return { error, status: 500 };
   }
+}
+
+async function findTagByName(tagName: string) {
+  const { data } = await supabase
+    .from("tags")
+    .select("id")
+    .eq("name", tagName)
+    .single();
+  return data;
+}
+
+async function getTagId(tagName: string) {
+  let tagId;
+  const existingTag = await findTagByName(tagName);
+  if (existingTag && "id" in existingTag) {
+    tagId = existingTag.id;
+  } else {
+    const newTag: any = await createTag(tagName);
+    tagId = newTag?.id ?? null;
+  }
+
+  return tagId;
+}
+
+async function createTag(tagName: string) {
+  const { data } = await supabase
+    .from("tags")
+    .insert({
+      name: tagName,
+    })
+    .select();
+  return data ? data[0] : null;
 }

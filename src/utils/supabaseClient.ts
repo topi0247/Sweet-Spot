@@ -100,13 +100,19 @@ export async function getUserById(id: string) {
   }
 }
 
-export async function postPost(url: string, comment: string, id: number) {
+export async function postPost(
+  url: string,
+  comment: string,
+  id: number,
+  genre: string
+) {
   try {
     const { data, error } = await supabase.from("posts").insert([
       {
         url,
         comment,
         user_id: id,
+        genre,
       },
     ]);
     if (error) {
@@ -123,19 +129,21 @@ export async function getPosts(range: [number, number]) {
   try {
     const { data, error } = await supabase
       .from("posts")
-      .select(
-        `
-      *,
-      user_id: user_id(*)
-    `
-      )
+      .select(`*,user_id: user_id(*)`)
       .range(range[0], range[1])
       .order("created_at", { ascending: false });
     if (error) {
       throw error;
     }
 
-    return data;
+    const { data: countData, error: countError } = await supabase
+      .from("posts")
+      .select("id", { count: "exact" });
+    if (countError) {
+      throw countError;
+    }
+
+    return { data, count: countData.length };
   } catch (error: any) {
     console.error("データの取得中にエラーが発生しました:", error.message);
     throw error;

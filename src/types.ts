@@ -5,6 +5,7 @@ export type Post = {
   url: string;
   user_id: { displayName: string };
   created_at: string;
+  genre: string;
 };
 
 export type User = {

@@ -15,6 +15,6 @@ const config: Config = {
     },
     extend: {},
   },
-  plugins: [require("daisyui")],
+  plugins: [require("@tailwindcss/line-clamp"), require("daisyui")],
 };
 export default config;

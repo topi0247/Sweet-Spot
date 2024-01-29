@@ -3,7 +3,7 @@ const RoutesPath = {
   Posts: "/posts",
   Post: "/posts/:id",
   CreatePost: "/posts/new",
-  EditPost: "/posts/:uuid/edit",
+  EditPost: "/posts/:uid/edit",
   Login: "/login",
   Logout: "/users/new",
   MyPage: "/users/",

@@ -8,13 +8,7 @@ import { getUserByEmail, postPost } from "@/utils/supabaseClient";
 import "../../../ui/radio.css";
 import { getOGP } from "@/common/getOgp";
 import Ogp from "@/components/ogp";
-import { set } from "firebase/database";
-
-type User = {
-  id: number;
-  uuid: string;
-  displayName: string;
-};
+import { User } from "@/types";
 
 const NewPost = () => {
   const [url, setUrl] = useState("");
@@ -34,7 +28,7 @@ const NewPost = () => {
       if (result && "id" in result) {
         setUser({
           id: result.id,
-          uuid: result.uuid,
+          uid: result.uid,
           displayName: result.displayName,
         });
       }
@@ -53,7 +47,7 @@ const NewPost = () => {
         if (result && "id" in result) {
           setUser({
             id: result.id,
-            uuid: result.uuid,
+            uid: result.uid,
             displayName: result.displayName,
           });
         }
@@ -137,14 +131,14 @@ const NewPost = () => {
   return (
     <section className="w-full mx-auto">
       <h2 className="text-center text-2xl">投稿する</h2>
-      <div className="bg-orange-200 p-4 w-96 mx-auto my-5">
+      <div className="bg-orange-100 p-4 w-96 mx-auto my-5 rounded-2xl">
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
           <p>*は必須項目です</p>
           <label>
             URL*
             <input
               type="url"
-              className="w-full bg-white focus:outline-none p-2"
+              className="w-full rounded-2xl bg-white focus:outline-none p-2"
               onChange={handleUrlChange}
             />
           </label>
@@ -158,7 +152,7 @@ const NewPost = () => {
             コメント
             <input
               type="text"
-              className="w-full bg-white focus:outline-none p-2"
+              className="w-full rounded-2xl bg-white focus:outline-none p-2"
               onChange={handleCommentChange}
             />
             {commentLengthView()}
@@ -166,7 +160,7 @@ const NewPost = () => {
           <label>
             もっと書く
             <textarea
-              className="w-full bg-white focus:outline-none p-2 h-48 overflow-y-hidden"
+              className="w-full rounded-2xl bg-white focus:outline-none p-2 h-48 overflow-y-hidden"
               onChange={handleMoreComment}
             ></textarea>
           </label>
@@ -183,7 +177,7 @@ const NewPost = () => {
               />
               <label
                 htmlFor="store"
-                className="inline-flex text-white bg-orange-400 border-0 py-1 px-4 focus:outline-none hover:bg-orange-600 rounded cursor-pointer"
+                className="inline-flex text-white bg-orange-300 border-0 py-1 px-4 focus:outline-none hover:bg-orange-600 rounded-2xl cursor-pointer transition-all"
               >
                 お店
               </label>
@@ -198,7 +192,7 @@ const NewPost = () => {
               />
               <label
                 htmlFor="item"
-                className="inline-flex text-white bg-orange-400 border-0 py-1 px-4 focus:outline-none hover:bg-orange-600 rounded cursor-pointer"
+                className="inline-flex text-white bg-orange-300 border-0 py-1 px-4 focus:outline-none hover:bg-orange-600 rounded-2xl cursor-pointer transition-all"
               >
                 商品
               </label>
@@ -213,7 +207,7 @@ const NewPost = () => {
               placeholder="スペースで区切ってください"
             />
           </label>
-          <button className="btn btn-sm bg-orange-100 hover:bg-orange-800 border-none text-orange-950 hover:text-orange-100 rounded-none">
+          <button className="btn btn-sm bg-orange-300 hover:bg-orange-600 border-none text-white rounded-2xl">
             投稿
           </button>
         </form>

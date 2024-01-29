@@ -43,7 +43,7 @@ const Headers = () => {
         if (result && "id" in result) {
           setUser({
             id: result.id,
-            uuid: result.uuid,
+            uid: result.uid,
             displayName: result.displayName,
           });
         }
@@ -54,7 +54,9 @@ const Headers = () => {
   return (
     <header className="flex justify-between items-center container mx-auto my-10 border-b border-orange-900">
       <h1 className="p-4 text-3xl">
-        <Link href={RoutesPath.Home}>Sweet Spot!</Link>
+        <Link href={RoutesPath.Home}>
+          <img src="/Sweet Spot!.png" className="object-cover h-12 w-48" />
+        </Link>
       </h1>
       <nav>
         <ul className="flex items-center">
@@ -98,7 +100,7 @@ const Headers = () => {
               <li>
                 <Link
                   className="p-4 hover:bg-slate-50 transition-all"
-                  href={`${RoutesPath.MyPage}+${user?.uuid}`}
+                  href={`${RoutesPath.MyPage}+${user?.uid}`}
                 >
                   マイページ
                 </Link>

@@ -8,7 +8,11 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: false },
 });
 
-export async function registerUser(displayName: string, email: string) {
+export async function registerUser(
+  displayName: string,
+  email: string,
+  uid: string
+) {
   try {
     const { data: checkData, error: checkError } = await supabase
       .from("users")
@@ -18,7 +22,7 @@ export async function registerUser(displayName: string, email: string) {
     if (!!checkData && checkData.length > 0) {
       const { data, error } = await supabase
         .from("users")
-        .update({ displayName: displayName })
+        .update({ displayName, uid })
         .eq("email", email)
         .select();
       if (checkError || error) {
@@ -49,7 +53,7 @@ export async function getUserByEmail(email: string) {
   try {
     let { data: user, error } = await supabase
       .from("users")
-      .select("id, uuid, displayName")
+      .select("id, uid, displayName")
       .eq("email", email)
       .limit(1);
 
@@ -71,7 +75,7 @@ export async function getUserById(id: string) {
   try {
     let { data: user, error } = await supabase
       .from("users")
-      .select("id, uuid, displayName")
+      .select("id, uid, displayName")
       .eq("id", id)
       .limit(1);
 
@@ -186,11 +190,11 @@ export async function getPosts(range: [number, number]) {
   }
 }
 
-export async function getPost(uuid: string) {
+export async function getPost(uid: string) {
   const { data, error } = await supabase
     .from("posts")
     .select(`*,user_id: user_id(*)`)
-    .eq("uuid", uuid)
+    .eq("uid", uid)
     .limit(1);
   if (error) {
     return { error, status: 500 };
@@ -199,6 +203,14 @@ export async function getPost(uuid: string) {
   const tags = await getTags(data[0].id);
 
   return { post: { ...data[0], tags }, status: 200 };
+}
+
+export async function deletePost(id: number) {
+  const { error } = await supabase.from("posts").delete().eq("id", id);
+  if (error) {
+    return { error, status: 500 };
+  }
+  return { status: 200 };
 }
 
 async function findTagByName(tagName: string) {

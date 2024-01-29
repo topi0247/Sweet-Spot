@@ -3,7 +3,8 @@
 import Loading from "@/app/loading";
 import { getOGP } from "@/common/getOgp";
 import { Post } from "@/types";
-import { getPost } from "@/utils/supabaseClient";
+import { auth } from "@/utils/firebase";
+import { deletePost, getPost } from "@/utils/supabaseClient";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -15,15 +16,16 @@ type OgpData = {
   image: string;
 };
 
-const Post = async ({ params }: { params: { uuid: string } }) => {
+const Post = async ({ params }: { params: { uid: string } }) => {
   const [post, setPost] = useState({} as Post);
   const [ogp, setOgp] = useState({} as OgpData);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
-      const fetchedPost = await getPost(params.uuid);
+      const fetchedPost = await getPost(params.uid);
       if (fetchedPost && fetchedPost.post) {
         const post = fetchedPost.post;
         setPost({
@@ -31,13 +33,15 @@ const Post = async ({ params }: { params: { uuid: string } }) => {
           uuid: post.uuid,
           comment: post.comment,
           url: post.url,
-          user_id: { displayName: post.user_id.displayName },
+          user_id: {
+            displayName: post.user_id.displayName,
+            uid: post.user_id.uid,
+          },
           created_at: post.created_at,
           genre: post.genre,
           tags: post.tags,
           more_comment: post.more_comment,
         });
-        setPost(post);
 
         const result = await getOGP(post.url);
         setOgp(result);
@@ -46,6 +50,42 @@ const Post = async ({ params }: { params: { uuid: string } }) => {
     };
     fetchData();
   }, []);
+
+  const handleEdit = () => {};
+
+  const handleDelete = async () => {
+    const res = window.confirm("削除しますか？");
+    if (res) {
+      const res = await deletePost(post.id);
+      if (res.status === 200) {
+        alert("削除しました");
+        router.back();
+      } else {
+        alert("削除に失敗しました");
+      }
+    }
+  };
+
+  const showEditDeleteButton = () => {
+    if (auth.currentUser?.uid === post.user_id.uid) {
+      return (
+        <div className="flex gap-2">
+          <button
+            className="border-slate-900 border-solid border-2 px-2 rounded"
+            onClick={handleEdit}
+          >
+            編集
+          </button>
+          <button
+            className="border-slate-900 border-solid border-2 px-2 rounded"
+            onClick={handleDelete}
+          >
+            削除
+          </button>
+        </div>
+      );
+    }
+  };
 
   return (
     <article className="m-auto">
@@ -81,7 +121,8 @@ const Post = async ({ params }: { params: { uuid: string } }) => {
                   {post.more_comment ? post.more_comment : ""}
                 </p>
                 <div className="flex mt-6 items-center pb-5 border-b-2 border-orange-900 mb-5"></div>
-                <div className="flex">
+                <div className="flex justify-between">
+                  {showEditDeleteButton()}
                   <Link
                     href={post.url}
                     target="_blank"

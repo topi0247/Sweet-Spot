@@ -64,7 +64,7 @@ const PostCard = ({ post }: PostCardProps) => {
       {loading ? (
         <Loading />
       ) : (
-        <div className="h-full bg-orange-200 shadow-xl rounded-none hover:translate-y-2 hover:shadow-none transition-all">
+        <div className="h-full bg-orange-100 shadow-xl rounded-2xl hover:translate-y-2 hover:shadow-none transition-all">
           <Ogp image={ogp.image} title={ogp.title} />
           <div className="p-5 h-2/4 grid">
             <h3>

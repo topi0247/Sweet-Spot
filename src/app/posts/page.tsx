@@ -43,7 +43,10 @@ const Posts = () => {
         uuid: post.uuid,
         comment: post.comment,
         url: post.url,
-        user_id: { displayName: post.user_id.displayName },
+        user_id: {
+          uid: post.user_id.uid,
+          displayName: post.user_id.displayName,
+        },
         created_at: post.created_at,
         genre: post.genre,
         tags: post.tags,

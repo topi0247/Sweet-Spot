@@ -17,7 +17,7 @@ const CreateUser = () => {
         setDisplayName(result.user.displayName);
       }
       if (result.user.email) {
-        registerUser(displayName, result.user.email);
+        registerUser(displayName, result.user.email, result.user.uid);
       }
       router.push(RoutesPath.Posts);
     });

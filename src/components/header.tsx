@@ -40,7 +40,7 @@ const Headers = () => {
   useEffect(() => {
     if (isLoggedIn && auth.currentUser?.email) {
       getUserByEmail(auth.currentUser.email).then((result) => {
-        if (result) {
+        if (result && "id" in result) {
           setUser({
             id: result.id,
             uuid: result.uuid,
@@ -54,7 +54,7 @@ const Headers = () => {
   return (
     <header className="flex justify-between items-center container mx-auto my-10 border-b border-orange-900">
       <h1 className="p-4 text-3xl">
-        <Link href={RoutesPath.Home}>バレチョコ！</Link>
+        <Link href={RoutesPath.Home}>Sweet Spot!</Link>
       </h1>
       <nav>
         <ul className="flex items-center">

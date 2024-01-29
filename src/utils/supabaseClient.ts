@@ -1,13 +1,5 @@
+import { Post } from "@/types";
 import { createClient } from "@supabase/supabase-js";
-
-// const SUPABASE_URL =
-//   process.env.NODE_ENV === "development"
-//     ? process.env.NEXT_PUBLIC_SUPABASE_URL!
-//     : process.env.SUPABASE_URL! ?? "";
-// const SUPABASE_ANON_KEY =
-//   process.env.NODE_ENV === "development"
-//     ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-//     : process.env.SUPABASE_ANON_KEY! ?? "";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -161,6 +153,26 @@ export async function getPosts(range: [number, number]) {
       return { error, status: 500 };
     }
 
+    // 各データのタグを取得
+    let posts: Post[] = [];
+    posts = await Promise.all(
+      data.map(async (post) => {
+        const postTags = [] as string[];
+        const { data: tags, error: tagError } = await supabase
+          .from("post_tags")
+          .select("tag_id(*)")
+          .eq("post_id", post.id);
+        if (tagError) {
+          return { error, status: 500 };
+        }
+
+        tags.forEach((tag: any) => {
+          postTags.push(tag.tag_id.name);
+        });
+        return { ...post, tags: postTags };
+      })
+    );
+
     const { data: countData, error: countError } = await supabase
       .from("posts")
       .select("id", { count: "exact" });
@@ -168,10 +180,25 @@ export async function getPosts(range: [number, number]) {
       return { error, status: 500 };
     }
 
-    return { data, count: countData.length };
+    return { posts, count: countData.length };
   } catch (error: any) {
     return { error, status: 500 };
   }
+}
+
+export async function getPost(uuid: string) {
+  const { data, error } = await supabase
+    .from("posts")
+    .select(`*,user_id: user_id(*)`)
+    .eq("uuid", uuid)
+    .limit(1);
+  if (error) {
+    return { error, status: 500 };
+  }
+
+  const tags = await getTags(data[0].id);
+
+  return { post: { ...data[0], tags }, status: 200 };
 }
 
 async function findTagByName(tagName: string) {
@@ -204,4 +231,17 @@ async function createTag(tagName: string) {
     })
     .select();
   return data ? data[0] : null;
+}
+
+async function getTags(postId: number) {
+  const { data, error } = await supabase
+    .from("post_tags")
+    .select("tag_id(*)")
+    .eq("post_id", postId);
+  if (error) {
+    return { error, status: 500 };
+  }
+
+  const tags = data.map((tag: any) => tag.tag_id.name);
+  return tags;
 }

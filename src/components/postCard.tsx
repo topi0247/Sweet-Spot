@@ -21,7 +21,7 @@ type OgpData = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const [ogp, setOgp] = useState({} as OgpData);
-  const { id, uuid, comment, url, user_id, created_at, genre } = post;
+  const { id, uuid, comment, url, user_id, created_at, genre, tags } = post;
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

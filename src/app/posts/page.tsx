@@ -35,9 +35,10 @@ const Posts = () => {
     const start = page * postsAmount;
     const end = page * postsAmount + (postsAmount - 1);
     const fetchedPosts = await getPosts([start, end]);
-    if (fetchedPosts) {
+
+    if (fetchedPosts && fetchedPosts.posts) {
       setPosts([]);
-      const newPosts = fetchedPosts.data.map((post) => ({
+      const newPosts = fetchedPosts.posts.map((post) => ({
         id: post.id,
         uuid: post.uuid,
         comment: post.comment,
@@ -45,6 +46,8 @@ const Posts = () => {
         user_id: { displayName: post.user_id.displayName },
         created_at: post.created_at,
         genre: post.genre,
+        tags: post.tags,
+        more_comment: post.more_comment,
       }));
       setPosts((prevPosts) => [...prevPosts, ...newPosts]);
       setTotalCount(fetchedPosts.count);

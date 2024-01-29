@@ -9,8 +9,8 @@ import Loading from "./loading";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "バレチョコ！",
-  description: "バレンタインのチョコなどお菓子をオススメし合うアプリです",
+  title: "Sweet Spot!",
+  description: "チョコやお菓子を紹介し合うサイトです",
 };
 
 export default function RootLayout({

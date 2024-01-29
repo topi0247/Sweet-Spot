@@ -6,6 +6,8 @@ export type Post = {
   user_id: { displayName: string };
   created_at: string;
   genre: string;
+  tags: string[];
+  more_comment: string;
 };
 
 export type User = {

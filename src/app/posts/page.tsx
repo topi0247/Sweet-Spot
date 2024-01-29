@@ -3,9 +3,9 @@
 import Pagination from "@/components/pagination";
 import PostCard from "@/components/postCard";
 import { PostData } from "@/types";
-import { getPosts } from "@/utils/supabaseClient";
 import React, { useEffect, useState } from "react";
 import Loading from "../loading";
+import { getPostsRange } from "@/components/getPostsRange";
 
 const Posts = () => {
   const [posts, setPosts] = useState([] as PostData[]);
@@ -16,7 +16,11 @@ const Posts = () => {
   // 初期
   useEffect(() => {
     const fetchData = async () => {
-      await getPostsLimit();
+      const result = await getPostsRange(currentPage);
+      if (result) {
+        setPosts(result.newPosts);
+        setPageTabsCount(result.pageTabsCount);
+      }
     };
     fetchData();
   }, []);
@@ -24,24 +28,14 @@ const Posts = () => {
   // ページ遷移
   useEffect(() => {
     const fetchData = async () => {
-      await getPostsLimit();
+      const result = await getPostsRange(currentPage);
+      if (result) {
+        setPosts(result.newPosts);
+        setPageTabsCount(result.pageTabsCount);
+      }
     };
     fetchData();
   }, [currentPage]);
-
-  const getPostsLimit = async () => {
-    const page = currentPage - 1;
-    const start = page * postsAmount;
-    const end = page * postsAmount + (postsAmount - 1);
-    const fetchedPosts = await getPosts([start, end]);
-
-    if (fetchedPosts && fetchedPosts.posts) {
-      setPosts([]);
-      const newPosts = fetchedPosts.posts;
-      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-      setPageTabsCount(Math.ceil(fetchedPosts.count / postsAmount));
-    }
-  };
 
   return (
     <article>

@@ -100,7 +100,7 @@ const Headers = () => {
               <li>
                 <Link
                   className="p-4 hover:bg-slate-50 transition-all"
-                  href={`${RoutesPath.MyPage}+${user?.uid}`}
+                  href={`${RoutesPath.MyPage}${user?.uid}`}
                 >
                   マイページ
                 </Link>

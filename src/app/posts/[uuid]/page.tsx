@@ -36,8 +36,6 @@ const Post = ({ params }: { params: { uuid: string } }) => {
     setLoading(false);
   };
 
-  const handleEdit = () => {};
-
   const handleDelete = async () => {
     const res = window.confirm("削除しますか？");
     if (res) {
@@ -51,16 +49,10 @@ const Post = ({ params }: { params: { uuid: string } }) => {
     }
   };
 
-  const showEditDeleteButton = () => {
+  const showDeleteButton = () => {
     if (auth.currentUser?.uid === post.user_id.uid) {
       return (
         <div className="flex gap-2">
-          <button
-            className="border-slate-900 border-solid border-2 px-2 rounded"
-            onClick={handleEdit}
-          >
-            編集
-          </button>
           <button
             className="border-slate-900 border-solid border-2 px-2 rounded"
             onClick={handleDelete}
@@ -84,7 +76,7 @@ const Post = ({ params }: { params: { uuid: string } }) => {
             <img
               alt={ogp.title}
               className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
-              src={ogp.image}
+              src={ogp.image === "" ? "/Sweet Spot!.png" : ogp.image}
             />
             <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
               <h2 className="text-sm title-font text-gray-500 tracking-widest">
@@ -108,7 +100,7 @@ const Post = ({ params }: { params: { uuid: string } }) => {
               </p>
               <div className="flex mt-6 items-center pb-5 border-b-2 border-orange-900 mb-5"></div>
               <div className="flex justify-between">
-                {showEditDeleteButton()}
+                {showDeleteButton()}
                 <Link
                   href={post.url}
                   target="_blank"

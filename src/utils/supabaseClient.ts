@@ -92,6 +92,27 @@ export async function getUserById(id: string) {
   }
 }
 
+export async function getUserByUid(uid: string) {
+  try {
+    let { data: user, error } = await supabase
+      .from("users")
+      .select("id, uid, displayName")
+      .eq("uid", uid)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    if (user === null) {
+      return null;
+    }
+    return user;
+  } catch (error: any) {
+    return null;
+  }
+}
+
 export async function postPost(
   url: string,
   comment: string,
@@ -190,6 +211,57 @@ export async function getPosts(range: [number, number]) {
   }
 }
 
+export async function getPostsByUser(uid: string, range: [number, number]) {
+  try {
+    const user = await getUserByUid(uid);
+
+    if (!user || "id" in user === false) {
+      return { error: "user not found", status: 404 };
+    }
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`*,user_id: user_id(*)`)
+      .eq("user_id", user.id)
+      .range(range[0], range[1])
+      .order("created_at", { ascending: false });
+    if (error) {
+      return { error, status: 500 };
+    }
+
+    // 各データのタグを取得
+    let posts: PostData[] = [];
+    posts = await Promise.all(
+      data.map(async (post) => {
+        const postTags = [] as string[];
+        const { data: tags, error: tagError } = await supabase
+          .from("post_tags")
+          .select("tag_id(*)")
+          .eq("post_id", post.id);
+        if (tagError) {
+          return { error, status: 500 };
+        }
+
+        tags.forEach((tag: any) => {
+          postTags.push(tag.tag_id.name);
+        });
+        return { ...post, tags: postTags };
+      })
+    );
+
+    const { data: countData, error: countError } = await supabase
+      .from("posts")
+      .select("id", { count: "exact" })
+      .eq("user_id", user.id);
+    if (countError) {
+      return { error, status: 500 };
+    }
+
+    return { posts, count: countData.length };
+  } catch (error: any) {
+    return { error, status: 500 };
+  }
+}
+
 export async function getPost(uid: string) {
   const { data, error } = await supabase
     .from("posts")
@@ -206,6 +278,13 @@ export async function getPost(uid: string) {
 }
 
 export async function deletePost(id: number) {
+  const { error: tagError } = await supabase
+    .from("post_tags")
+    .delete()
+    .eq("post_id", id);
+  if (tagError) {
+    return { error: tagError, status: 500 };
+  }
   const { error } = await supabase.from("posts").delete().eq("id", id);
   if (error) {
     return { error, status: 500 };

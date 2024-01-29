@@ -1,4 +1,4 @@
-export type Post = {
+export type PostData = {
   id: number;
   comment: string;
   uuid: string;
@@ -10,8 +10,13 @@ export type Post = {
   more_comment: string;
 };
 
-export type User = {
+export type UserData = {
   id: number;
   displayName: string;
   uid: string;
+};
+
+export type OgpData = {
+  title: string;
+  image: string;
 };

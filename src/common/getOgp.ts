@@ -9,10 +9,8 @@ export const getOGP = async (url: string) => {
   }>(
     (result, element) => {
       const property = element.getAttribute("property");
-      if (property === "og:title") {
-        // title を取得
-        result.title = element.getAttribute("content") ?? "";
-      }
+      // title を取得
+      result.title = dom.title ?? "タイトルが取得できませんでした";
       if (property === "og:image") {
         // image を取得
         result.image = element.getAttribute("content") ?? "";

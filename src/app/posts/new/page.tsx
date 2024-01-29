@@ -8,17 +8,19 @@ import { getUserByEmail, postPost } from "@/utils/supabaseClient";
 import "../../../ui/radio.css";
 import { getOGP } from "@/common/getOgp";
 import Ogp from "@/components/ogp";
-import { User } from "@/types";
+import { UserData } from "@/types";
+import Button from "@/components/button";
 
 const NewPost = () => {
   const [url, setUrl] = useState("");
   const [comment, setComment] = useState("");
   const [moreComment, setMoreComment] = useState("");
-  const [user, setUser] = useState({} as User);
+  const [user, setUser] = useState({} as UserData);
   const [genre, setGenre] = useState("" as string);
   const [existUrl, setExitsUrl] = useState(false);
   const [title, setTitle] = useState("" as string);
   const [image, setImage] = useState("" as string);
+  const [notImage, setNotImage] = useState(false);
   const [tags, setTags] = useState([] as string[]);
   const router = useRouter();
 
@@ -67,7 +69,12 @@ const NewPost = () => {
       const getMetadata = async () => {
         const result = await getOGP(url);
         setTitle(result.title);
-        setImage(result.image);
+        if (result.image === "") {
+          setNotImage(true);
+          setImage("/Sweet Spot!.png");
+        } else {
+          setImage(result.image);
+        }
       };
       getMetadata();
     } else {
@@ -142,12 +149,17 @@ const NewPost = () => {
               onChange={handleUrlChange}
             />
           </label>
-          {title && image && (
-            <>
-              <p>{title}</p>
-              <Ogp image={image} title={title} />
-            </>
+          {title && (
+            <p className="border-solid border-b-2 border-orange-950">{title}</p>
           )}
+          {notImage && (
+            <p>
+              画像がありませんでした。
+              <br />
+              デフォルト画像で投稿できます。
+            </p>
+          )}
+          {image && <Ogp image={image} title={title} />}
           <label>
             コメント
             <input
@@ -207,9 +219,7 @@ const NewPost = () => {
               placeholder="スペースで区切ってください"
             />
           </label>
-          <button className="btn btn-sm bg-orange-300 hover:bg-orange-600 border-none text-white rounded-2xl">
-            投稿
-          </button>
+          <Button content="投稿" onClickEvent={null} />
         </form>
       </div>
     </section>

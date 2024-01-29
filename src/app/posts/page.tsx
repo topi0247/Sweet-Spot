@@ -2,15 +2,14 @@
 
 import Pagination from "@/components/pagination";
 import PostCard from "@/components/postCard";
-import { Post } from "@/types";
+import { PostData } from "@/types";
 import { getPosts } from "@/utils/supabaseClient";
 import React, { useEffect, useState } from "react";
 import Loading from "../loading";
 
 const Posts = () => {
-  const [posts, setPosts] = useState([] as Post[]);
+  const [posts, setPosts] = useState([] as PostData[]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
   const [pageTabsCount, setPageTabsCount] = useState(0);
   const postsAmount = 20;
 
@@ -38,22 +37,8 @@ const Posts = () => {
 
     if (fetchedPosts && fetchedPosts.posts) {
       setPosts([]);
-      const newPosts = fetchedPosts.posts.map((post) => ({
-        id: post.id,
-        uuid: post.uuid,
-        comment: post.comment,
-        url: post.url,
-        user_id: {
-          uid: post.user_id.uid,
-          displayName: post.user_id.displayName,
-        },
-        created_at: post.created_at,
-        genre: post.genre,
-        tags: post.tags,
-        more_comment: post.more_comment,
-      }));
+      const newPosts = fetchedPosts.posts;
       setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-      setTotalCount(fetchedPosts.count);
       setPageTabsCount(Math.ceil(fetchedPosts.count / postsAmount));
     }
   };

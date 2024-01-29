@@ -7,11 +7,11 @@ import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserByEmail } from "@/utils/supabaseClient";
-import { User } from "@/types";
+import { UserData } from "@/types";
 
 const Headers = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState({} as User);
+  const [user, setUser] = useState({} as UserData);
 
   const router = useRouter();
   const logout = async () => {

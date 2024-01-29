@@ -1,4 +1,4 @@
-import { Post } from "@/types";
+import { PostData } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -158,7 +158,7 @@ export async function getPosts(range: [number, number]) {
     }
 
     // 各データのタグを取得
-    let posts: Post[] = [];
+    let posts: PostData[] = [];
     posts = await Promise.all(
       data.map(async (post) => {
         const postTags = [] as string[];
@@ -194,7 +194,7 @@ export async function getPost(uid: string) {
   const { data, error } = await supabase
     .from("posts")
     .select(`*,user_id: user_id(*)`)
-    .eq("uid", uid)
+    .eq("uuid", uid)
     .limit(1);
   if (error) {
     return { error, status: 500 };

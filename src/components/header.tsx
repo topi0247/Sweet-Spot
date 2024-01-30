@@ -68,6 +68,14 @@ const Headers = () => {
               投稿一覧
             </Link>
           </li>
+          <li>
+            <Link
+              className="p-4 hover:bg-slate-50 transition-all"
+              href={RoutesPath.CreatePost}
+            >
+              投稿する
+            </Link>
+          </li>
           {!isLoggedIn ? (
             <>
               <li>
@@ -89,14 +97,6 @@ const Headers = () => {
             </>
           ) : (
             <>
-              <li>
-                <Link
-                  className="p-4 hover:bg-slate-50 transition-all"
-                  href={RoutesPath.CreatePost}
-                >
-                  投稿する
-                </Link>
-              </li>
               <li>
                 <Link
                   className="p-4 hover:bg-slate-50 transition-all"

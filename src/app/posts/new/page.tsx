@@ -86,7 +86,7 @@ const NewPost = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!url) {
+    if (!isValidURL(url) || tags.length > 3 || comment.length > 10) {
       return;
     }
 
@@ -132,7 +132,16 @@ const NewPost = () => {
   };
 
   const handleTags = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTags(e.target.value.split(/\s|　/));
+    const tags = e.target.value.split(/\s|　/).filter((tag) => tag !== "");
+    setTags(tags);
+  };
+
+  const tagsLengthView = () => {
+    if (tags.length <= 3) {
+      return <p className="text-sm text-end">{tags.length}/3つ</p>;
+    } else {
+      return <p className="text-sm text-red-600 text-end">{tags.length}/3つ</p>;
+    }
   };
 
   return (
@@ -212,12 +221,15 @@ const NewPost = () => {
           </div>
           <label>
             タグ
+            <p className="text-xs text-gray-600">スペースで区切ってください</p>
+            <p className="text-xs text-gray-600">3つまで設定できます</p>
             <input
               type="text"
               className="w-full bg-white focus:outline-none p-2"
               onChange={handleTags}
-              placeholder="スペースで区切ってください"
+              placeholder="チョコ　期間限定　甘さ控えめ"
             />
+            {tagsLengthView()}
           </label>
           <Button content="投稿" onClickEvent={null} />
         </form>

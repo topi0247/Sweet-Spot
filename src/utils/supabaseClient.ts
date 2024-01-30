@@ -182,7 +182,7 @@ export async function getPosts(range: [number, number]) {
     let posts: PostData[] = [];
     posts = await Promise.all(
       data.map(async (post) => {
-        const postTags = [] as string[];
+        const postTags = [] as { id: number; name: string }[];
         const { data: tags, error: tagError } = await supabase
           .from("post_tags")
           .select("tag_id(*)")
@@ -192,7 +192,7 @@ export async function getPosts(range: [number, number]) {
         }
 
         tags.forEach((tag: any) => {
-          postTags.push(tag.tag_id.name);
+          postTags.push({ id: tag.tag_id.id, name: tag.tag_id.name });
         });
         return { ...post, tags: postTags };
       })

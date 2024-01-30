@@ -52,37 +52,44 @@ const PostCard = ({ post }: PostCardProps) => {
       );
   };
 
-  const onclickDetail = () => {
-    router.push(`/posts/${post.uuid}`);
-  };
+  console.log(tags);
 
   return (
     <section
       className="text-orange-900 body-font w-full"
-      style={{ height: 360 }}
+      style={{ height: 430 }}
     >
       {loading ? (
         <Loading />
       ) : (
-        <div
-          className="h-full bg-orange-100 shadow-xl rounded-2xl hover:translate-y-2 hover:shadow-none transition-all cursor-pointer"
-          onClick={() => onclickDetail()}
-        >
+        <div className="h-full bg-orange-100 shadow-xl rounded-2xl hover:translate-y-2 hover:shadow-none transition-all">
           <Ogp image={ogp.image} title={ogp.title} />
-          <div className="p-5 h-2/4 grid">
-            <h3>
-              <span className="line-clamp-2">{ogp.title}</span>
-            </h3>
-            <div className="flex flex-col gap-1 mt-2">
-              <hr className="border-orange-900" />
-              <p className="text-sm">
-                <FontAwesomeIcon icon={faUser} className="mr-1" />
-                {user_id.displayName}
-              </p>
+          <div className="p-5 flex flex-col">
+            <div>
+              <h3>
+                <span className="line-clamp-2">{ogp.title}</span>
+              </h3>
+              <hr className="border-orange-900 my-2" />
+            </div>
+            <div className="flex flex-wrap text-xs gap-1 justify-start items-center">
+              {tags.map((tag) => (
+                <p
+                  key={tag.id}
+                  className="border-solid border-green-500 border-2 px-2 rounded-lg text-green-500"
+                >
+                  {tag.name}
+                </p>
+              ))}
+            </div>
+            <div className="grid mt-2 items-center">
               <div className="text-sm">
+                <p>
+                  <FontAwesomeIcon icon={faUser} className="mr-1" />
+                  {user_id.displayName}
+                </p>
                 <p className="line-clamp-1">{comment}</p>
                 <Link
-                  href={`/posts/${post.uuid}`}
+                  href={`/posts/${uuid}`}
                   className="text-sky-500 block text-end"
                 >
                   詳細

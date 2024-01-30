@@ -6,7 +6,7 @@ export type PostData = {
   user_id: { displayName: string; uid: string };
   created_at: string;
   genre: string;
-  tags: string[];
+  tags: { id: number; name: string }[];
   more_comment: string;
 };
 

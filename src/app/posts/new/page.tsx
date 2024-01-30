@@ -147,7 +147,7 @@ const NewPost = () => {
   return (
     <section className="w-full mx-auto">
       <h2 className="text-center text-2xl">投稿する</h2>
-      <div className="bg-orange-100 p-4 w-96 mx-auto my-5 rounded-2xl">
+      <div className="bg-orange-100 p-4 w-5/6 mx-auto my-5 rounded-2xl">
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
           <p>*は必須項目です</p>
           <label>

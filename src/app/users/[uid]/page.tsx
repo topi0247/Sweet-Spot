@@ -25,6 +25,10 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
   const [pageTabsCount, setPageTabsCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const isMobile = window.innerWidth <= 768;
+  const isTablet = 769 < window.innerWidth && window.innerWidth < 1024;
+  const isPc = 1024 <= window.innerWidth;
+  const [isResponsiveClass, setIsResponsiveClass] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,14 +45,10 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
       }
     };
     fetchData();
+    if (isMobile) setIsResponsiveClass("flex flex-col gap-4");
+    else if (isTablet) setIsResponsiveClass("grid grid-cols-2 gap-4");
+    else if (isPc) setIsResponsiveClass("grid grid-cols-3 gap-4");
   }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await defaultSetPosts();
-    };
-    fetchData();
-  }, [currentPage]);
 
   useEffect(() => {
     setLoading(true);
@@ -65,7 +65,7 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
       }
     };
     fetchData();
-  }, [isFavorite]);
+  }, [currentPage, isFavorite]);
 
   const defaultSetPosts = async () => {
     const decodedUid = decodeURIComponent(uid);
@@ -76,44 +76,6 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
       setLoading(false);
     }
     return result;
-  };
-
-  const showPostsMode = () => {
-    if (isFavorite) {
-      return (
-        <>
-          <button
-            className="m-3 text-xl  p-2 rounded-2xl hover:bg-slate-200 transition-all"
-            onClick={() => handleFavorite()}
-          >
-            投稿一覧
-          </button>
-          <button
-            className="m-3 text-xl rounded-2xl p-2 bg-slate-200"
-            onClick={() => handleFavorite()}
-          >
-            いいね一覧
-          </button>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <button
-            className="m-3 text-xl bg-slate-200 p-2 rounded-2xl"
-            onClick={() => handleFavorite()}
-          >
-            投稿一覧
-          </button>
-          <button
-            className="m-3 text-xl rounded-2xl p-2 hover:bg-slate-200 transition-all"
-            onClick={() => handleFavorite()}
-          >
-            いいね一覧
-          </button>
-        </>
-      );
-    }
   };
 
   const handleFavorite = () => {
@@ -139,8 +101,40 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
             />
           </div>
           <div>
-            <div className="flex">{showPostsMode()}</div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="flex">
+              {isFavorite ? (
+                <>
+                  <button
+                    className="m-3 text-xl  p-2 rounded-2xl hover:bg-slate-200 transition-all"
+                    onClick={() => handleFavorite()}
+                  >
+                    投稿一覧
+                  </button>
+                  <button
+                    className="m-3 text-xl rounded-2xl p-2 bg-slate-200"
+                    onClick={() => handleFavorite()}
+                  >
+                    いいね一覧
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="m-3 text-xl bg-slate-200 p-2 rounded-2xl"
+                    onClick={() => handleFavorite()}
+                  >
+                    投稿一覧
+                  </button>
+                  <button
+                    className="m-3 text-xl rounded-2xl p-2 hover:bg-slate-200 transition-all"
+                    onClick={() => handleFavorite()}
+                  >
+                    いいね一覧
+                  </button>
+                </>
+              )}
+            </div>
+            <div className={isResponsiveClass}>
               {posts.map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}

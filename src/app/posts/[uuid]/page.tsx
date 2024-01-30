@@ -140,7 +140,7 @@ const Post = ({ params }: { params: { uuid: string } }) => {
   return (
     <article className="m-auto">
       <section className="text-gray-600 body-font overflow-hidden">
-        <div className="container px-5 py-24 mx-auto">
+        <div className="container px-5 mx-auto">
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
             <img
               alt={ogp.title}
@@ -179,7 +179,7 @@ const Post = ({ params }: { params: { uuid: string } }) => {
             </div>
           </div>
         </div>
-        <div className="text-center">
+        <div className="text-center mt-10">
           <Button content="一覧に戻る" onClickEvent={onClickRollback} />
         </div>
       </section>

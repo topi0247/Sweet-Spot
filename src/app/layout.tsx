@@ -24,7 +24,7 @@ export default function RootLayout({
         <div className="flex flex-col min-h-screen">
           <Headers />
           <Suspense fallback={<Loading />}>
-            <main className="flex-grow container mx-auto">{children}</main>
+            <main className="flex-grow container mx-auto p-4">{children}</main>
           </Suspense>
           <Footers />
         </div>

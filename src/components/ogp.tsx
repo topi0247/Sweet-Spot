@@ -2,7 +2,7 @@ import React from "react";
 
 const Ogp = ({ image, title }: { image: string; title: string }) => {
   return (
-    <figure className="h-2/4 bg-slate-200 rounded-2xl rounded-b-none">
+    <figure className="h-full">
       <img
         src={image === "" ? "/Sweet Spot!.png" : image}
         alt={title}

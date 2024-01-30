@@ -11,7 +11,9 @@ const Posts = () => {
   const [posts, setPosts] = useState([] as PostData[]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageTabsCount, setPageTabsCount] = useState(0);
-  const postsAmount = 20;
+  const isMobile = window.innerWidth <= 768;
+  const isTablet = 769 < window.innerWidth && window.innerWidth < 1024;
+  const isPc = 1024 <= window.innerWidth;
 
   // 初期
   useEffect(() => {
@@ -37,18 +39,27 @@ const Posts = () => {
     fetchData();
   }, [currentPage]);
 
-  return (
-    <article>
-      <h2 className="text-center text-2xl m-5">投稿一覧</h2>
-      {posts.length === 0 ? (
-        <Loading />
-      ) : (
-        <div className="grid grid-cols-3 gap-4">
+  const page = () => {
+    let className = "";
+    if (isMobile) className = "flex flex-col gap-4";
+    else if (isTablet) className = "grid grid-cols-2 gap-4";
+    else if (isPc) className = "grid grid-cols-3 gap-4";
+
+    return (
+      <>
+        <div className={className}>
           {posts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>
-      )}
+      </>
+    );
+  };
+
+  return (
+    <article>
+      <h2 className="text-center text-2xl m-5">投稿一覧</h2>
+      {posts.length === 0 ? <Loading /> : page()}
       <Pagination
         pageNumber={currentPage}
         totalCount={pageTabsCount}

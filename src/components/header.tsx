@@ -51,18 +51,26 @@ const Headers = () => {
     }
   }, [isLoggedIn]);
 
+  const handleLogo = () => {
+    if (isLoggedIn) {
+      router.push(RoutesPath.Posts);
+    } else {
+      router.push(RoutesPath.Home);
+    }
+  };
+
   return (
     <header className="flex justify-between items-center container mx-auto my-10 border-b border-orange-900">
       <h1 className="p-4 text-3xl">
-        <Link href={RoutesPath.Home}>
+        <button onClick={() => handleLogo()}>
           <img src="/Sweet Spot!.png" className="object-cover h-12 w-48" />
-        </Link>
+        </button>
       </h1>
       <nav>
         <ul className="flex items-center">
           <li>
             <Link
-              className="p-4 hover:bg-slate-50 transition-all"
+              className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
               href={RoutesPath.Posts}
             >
               投稿一覧
@@ -70,7 +78,7 @@ const Headers = () => {
           </li>
           <li>
             <Link
-              className="p-4 hover:bg-slate-50 transition-all"
+              className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
               href={RoutesPath.CreatePost}
             >
               投稿する
@@ -80,7 +88,7 @@ const Headers = () => {
             <>
               <li>
                 <Link
-                  className="p-4 hover:bg-slate-50 transition-all"
+                  className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
                   href={RoutesPath.Logout}
                 >
                   新規登録
@@ -88,7 +96,7 @@ const Headers = () => {
               </li>
               <li>
                 <Link
-                  className="p-4 hover:bg-slate-50 transition-all"
+                  className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
                   href={RoutesPath.Login}
                 >
                   ログイン
@@ -99,7 +107,7 @@ const Headers = () => {
             <>
               <li>
                 <Link
-                  className="p-4 hover:bg-slate-50 transition-all"
+                  className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
                   href={`${RoutesPath.MyPage}${user?.uid}`}
                 >
                   マイページ
@@ -107,7 +115,7 @@ const Headers = () => {
               </li>
               <li>
                 <button
-                  className="p-4 hover:bg-slate-50 transition-all"
+                  className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
                   onClick={() => logout()}
                 >
                   ログアウト

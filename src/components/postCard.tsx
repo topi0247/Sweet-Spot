@@ -52,8 +52,6 @@ const PostCard = ({ post }: PostCardProps) => {
       );
   };
 
-  console.log(tags);
-
   return (
     <section
       className="text-orange-900 body-font w-full"
@@ -78,6 +76,7 @@ const PostCard = ({ post }: PostCardProps) => {
                   className="border-solid border-green-500 border-2 px-2 rounded-lg text-green-500"
                 >
                   {tag.name}
+                  
                 </p>
               ))}
             </div>

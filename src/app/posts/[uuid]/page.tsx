@@ -120,7 +120,6 @@ const Post = ({ params }: { params: { uuid: string } }) => {
       }
     } else {
       const res = await postFavorite(post.id, uid);
-      console.log(res);
       if (res.status !== 200) {
         return;
       }

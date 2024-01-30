@@ -4,11 +4,11 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { OgpData, PostData } from "@/types";
-import { getOGP } from "@/common/getOgp";
+import { getOGP } from "@/common/GetOgp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import Loading from "@/app/loading";
-import Ogp from "./ogp";
+import Ogp from "./Ogp";
 import { useRouter } from "next/navigation";
 
 type PostCardProps = {
@@ -76,7 +76,6 @@ const PostCard = ({ post }: PostCardProps) => {
                   className="border-solid border-green-500 border-2 px-2 rounded-lg text-green-500"
                 >
                   {tag.name}
-                  
                 </p>
               ))}
             </div>

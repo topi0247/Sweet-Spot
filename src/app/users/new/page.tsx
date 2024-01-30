@@ -1,5 +1,5 @@
 "use client";
-import RoutesPath from "@/common/routerPath";
+import RoutesPath from "@/common/RouterPath";
 import { auth, provider } from "@/utils/firebase";
 import { registerUser } from "@/utils/supabaseClient";
 import { signInWithPopup } from "firebase/auth";

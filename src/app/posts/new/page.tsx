@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import RoutesPath from "@/common/routerPath";
+import RoutesPath from "@/common/RouterPath";
 import { auth } from "@/utils/firebase";
 import { useRouter } from "next/navigation";
 import { getUserByEmail, postPost } from "@/utils/supabaseClient";
 import "../../../ui/radio.css";
-import { getOGP } from "@/common/getOgp";
-import Ogp from "@/components/ogp";
+import { getOGP } from "@/common/GetOgp";
+import Ogp from "@/components/Ogp";
 import { UserData } from "@/types";
-import Button from "@/components/button";
+import Button from "@/components/Button";
 
 const NewPost = () => {
   const [url, setUrl] = useState("");

@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@/components/button";
+import Button from "@/components/Button";
 import { UserData } from "@/types";
 import { getUserByUid, updateUser } from "@/utils/supabaseClient";
 import { useRouter } from "next/navigation";

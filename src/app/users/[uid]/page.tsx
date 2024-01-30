@@ -4,14 +4,14 @@ import Loading from "@/app/loading";
 import {
   getPostsRangeByFavorite,
   getPostsRangeByUser,
-} from "@/components/getPostsRange";
-import Pagination from "@/components/pagination";
-import PostCard from "@/components/postCard";
+} from "@/components/GetPostsRange";
+import Pagination from "@/components/Pagination";
+import PostCard from "@/components/PostCard";
 import { PostData, UserData } from "@/types";
 import { getUserByUid } from "@/utils/supabaseClient";
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Button from "@/components/button";
+import Button from "@/components/Button";
 
 const MyPage = ({ params }: { params: { uid: string } }) => {
   const searchParams = useSearchParams();
@@ -131,7 +131,12 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
             {user.displayName}さんのページ
           </h2>
           <div className="text-end">
-            <Button content="表示名を変更する" onClickEvent={()=>{router.push(`/users/${uid}/edit`)}} />
+            <Button
+              content="表示名を変更する"
+              onClickEvent={() => {
+                router.push(`/users/${uid}/edit`);
+              }}
+            />
           </div>
           <div>
             <div className="flex">{showPostsMode()}</div>

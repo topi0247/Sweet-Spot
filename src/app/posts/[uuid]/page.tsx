@@ -1,8 +1,8 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { getOGP } from "@/common/getOgp";
-import Button from "@/components/button";
+import { getOGP } from "@/common/GetOgp";
+import Button from "@/components/Button";
 import { OgpData, PostData } from "@/types";
 import { auth } from "@/utils/firebase";
 import {
@@ -80,7 +80,10 @@ const Post = ({ params }: { params: { uuid: string } }) => {
     if (!auth.currentUser) return;
     if (isFavorite) {
       return (
-        <button className="rounded-full w-10 h-10 bg-rose-200 p-0 border-0 inline-flex items-center justify-center text-rose-500 ml-4" onClick={()=>handleFavorite()}>
+        <button
+          className="rounded-full w-10 h-10 bg-rose-200 p-0 border-0 inline-flex items-center justify-center text-rose-500 ml-4"
+          onClick={() => handleFavorite()}
+        >
           <svg
             fill="currentColor"
             strokeLinecap="round"
@@ -95,7 +98,10 @@ const Post = ({ params }: { params: { uuid: string } }) => {
       );
     } else {
       return (
-        <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4" onClick={()=>handleFavorite()}>
+        <button
+          className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4"
+          onClick={() => handleFavorite()}
+        >
           <svg
             fill="currentColor"
             strokeLinecap="round"

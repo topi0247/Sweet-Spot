@@ -1,13 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import RoutesPath from "@/common/routerPath";
+import RoutesPath from "@/common/RouterPath";
 import { auth } from "@/utils/firebase";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserByEmail } from "@/utils/supabaseClient";
 import { UserData } from "@/types";
+import PCHeader from "@/components/PCHeader";
+import TabletHeader from "./TabletHeader";
+import MobileHeader from "./MobileHeader";
 
 const Headers = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -58,74 +60,49 @@ const Headers = () => {
       router.push(RoutesPath.Home);
     }
   };
+  const getWindowWidth = () => {
+    return window.innerWidth;
+  };
+
+  const isMobile = () => {
+    return getWindowWidth() < 768;
+  };
+
+  const isTablet = () => {
+    return getWindowWidth() >= 768 && getWindowWidth() < 1024;
+  };
+
+  const isPC = () => {
+    return getWindowWidth() >= 1024;
+  };
 
   return (
-    <header className="flex justify-between items-center container mx-auto my-10 border-b border-orange-900">
-      <h1 className="p-4 text-3xl">
-        <button onClick={() => handleLogo()}>
-          <img src="/Sweet Spot!.png" className="object-cover h-12 w-48" />
-        </button>
-      </h1>
-      <nav>
-        <ul className="flex items-center">
-          <li>
-            <Link
-              className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
-              href={RoutesPath.Posts}
-            >
-              投稿一覧
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
-              href={RoutesPath.CreatePost}
-            >
-              投稿する
-            </Link>
-          </li>
-          {!isLoggedIn ? (
-            <>
-              <li>
-                <Link
-                  className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
-                  href={RoutesPath.Logout}
-                >
-                  新規登録
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
-                  href={RoutesPath.Login}
-                >
-                  ログイン
-                </Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link
-                  className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
-                  href={`${RoutesPath.MyPage}${user?.uid}`}
-                >
-                  マイページ
-                </Link>
-              </li>
-              <li>
-                <button
-                  className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
-                  onClick={() => logout()}
-                >
-                  ログアウト
-                </button>
-              </li>
-            </>
-          )}
-        </ul>
-      </nav>
-    </header>
+    <>
+      {isMobile() && (
+        <MobileHeader
+          handleLogo={handleLogo}
+          isLoggedIn={isLoggedIn}
+          logout={logout}
+          user={user}
+        />
+      )}
+      {isTablet() && (
+        <TabletHeader
+          handleLogo={handleLogo}
+          isLoggedIn={isLoggedIn}
+          logout={logout}
+          user={user}
+        />
+      )}
+      {isPC() && (
+        <PCHeader
+          handleLogo={handleLogo}
+          isLoggedIn={isLoggedIn}
+          logout={logout}
+          user={user}
+        />
+      )}
+    </>
   );
 };
 

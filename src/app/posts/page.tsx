@@ -1,11 +1,11 @@
 "use client";
 
-import Pagination from "@/components/pagination";
-import PostCard from "@/components/postCard";
+import Pagination from "@/components/Pagination";
+import PostCard from "@/components/PostCard";
 import { PostData } from "@/types";
 import React, { useEffect, useState } from "react";
 import Loading from "../loading";
-import { getPostsRange } from "@/components/getPostsRange";
+import { getPostsRange } from "@/components/GetPostsRange";
 
 const Posts = () => {
   const [posts, setPosts] = useState([] as PostData[]);

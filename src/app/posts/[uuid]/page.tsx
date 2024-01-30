@@ -2,9 +2,15 @@
 
 import Loading from "@/app/loading";
 import { getOGP } from "@/common/getOgp";
+import Button from "@/components/button";
 import { OgpData, PostData } from "@/types";
 import { auth } from "@/utils/firebase";
-import { deletePost, getPost } from "@/utils/supabaseClient";
+import {
+  deleteFavorite,
+  deletePost,
+  getPost,
+  postFavorite,
+} from "@/utils/supabaseClient";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -14,6 +20,7 @@ import React, { useEffect, useState } from "react";
 const Post = ({ params }: { params: { uuid: string } }) => {
   const [post, setPost] = useState({} as PostData);
   const [ogp, setOgp] = useState({} as OgpData);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -26,10 +33,11 @@ const Post = ({ params }: { params: { uuid: string } }) => {
   }, []);
 
   const getPostData = async () => {
-    const postData = await getPost(params.uuid);
+    const uid = auth.currentUser?.uid ?? "";
+    const postData = await getPost(params.uuid, uid);
     if (postData) {
-      console.log(postData);
       setPost(postData.post);
+      setIsFavorite(postData.post.isFavorite);
       const ogpData = await getOGP(postData.post.url);
       setOgp(ogpData);
     }
@@ -52,9 +60,9 @@ const Post = ({ params }: { params: { uuid: string } }) => {
   const showDeleteButton = () => {
     if (auth.currentUser?.uid === post.user_id.uid) {
       return (
-        <div className="flex gap-2">
+        <div className="flex gap-2 text-sm">
           <button
-            className="border-slate-900 border-solid border-2 px-2 rounded"
+            className="border-slate-900 border-solid border-2 px-2 rounded-2xl"
             onClick={handleDelete}
           >
             削除
@@ -62,6 +70,62 @@ const Post = ({ params }: { params: { uuid: string } }) => {
         </div>
       );
     }
+  };
+
+  const onClickRollback = () => {
+    router.back();
+  };
+
+  const showFavoriteButton = () => {
+    if (!auth.currentUser) return;
+    if (isFavorite) {
+      return (
+        <button className="rounded-full w-10 h-10 bg-rose-200 p-0 border-0 inline-flex items-center justify-center text-rose-500 ml-4" onClick={()=>handleFavorite()}>
+          <svg
+            fill="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            className="w-5 h-5"
+            viewBox="0 0 24 24"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
+          </svg>
+        </button>
+      );
+    } else {
+      return (
+        <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4" onClick={()=>handleFavorite()}>
+          <svg
+            fill="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            className="w-5 h-5"
+            viewBox="0 0 24 24"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
+          </svg>
+        </button>
+      );
+    }
+  };
+
+  const handleFavorite = async () => {
+    const uid = auth.currentUser?.uid ?? "";
+    if (isFavorite) {
+      const res = await deleteFavorite(post.id, uid);
+      if (res.status !== 200) {
+        return;
+      }
+    } else {
+      const res = await postFavorite(post.id, uid);
+      console.log(res);
+      if (res.status !== 200) {
+        return;
+      }
+    }
+    setIsFavorite(!isFavorite);
   };
 
   if (loading) {
@@ -79,13 +143,9 @@ const Post = ({ params }: { params: { uuid: string } }) => {
               src={ogp.image === "" ? "/Sweet Spot!.png" : ogp.image}
             />
             <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-              <h2 className="text-sm title-font text-gray-500 tracking-widest">
-                {post.tags
-                  ? post.tags.length > 1
-                    ? post.tags.join(" ")
-                    : post.tags
-                  : ""}
-              </h2>
+              <p className="text-sm title-font text-gray-500 tracking-widest">
+                {post.tags.join(" ")}
+              </p>
               <h2 className="text-gray-900 text-3xl title-font font-medium mb-1">
                 {ogp.title}
               </h2>
@@ -105,33 +165,17 @@ const Post = ({ params }: { params: { uuid: string } }) => {
                   href={post.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded"
+                  className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded-2xl transition-all"
                 >
-                  詳細を見に行く
+                  サイトへ見に行く
                 </Link>
-                {/* <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
-                    <svg
-                      fill="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="w-5 h-5"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
-                    </svg>
-                  </button> */}
+                {showFavoriteButton()}
               </div>
             </div>
           </div>
         </div>
         <div className="text-center">
-          <button
-            onClick={() => router.back()}
-            className="btn bg-orange-300 border-none text-black hover:bg-orange-400"
-          >
-            一覧へ戻る
-          </button>
+          <Button content="一覧に戻る" onClickEvent={onClickRollback} />
         </div>
       </section>
     </article>

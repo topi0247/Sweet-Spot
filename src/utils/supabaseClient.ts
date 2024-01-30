@@ -232,7 +232,6 @@ export async function getPostsByUser(uid: string, range: [number, number]) {
     let posts: PostData[] = [];
     posts = await Promise.all(
       data.map(async (post) => {
-        const postTags = [] as string[];
         const { data: tags, error: tagError } = await supabase
           .from("post_tags")
           .select("tag_id(*)")
@@ -241,10 +240,7 @@ export async function getPostsByUser(uid: string, range: [number, number]) {
           return { error, status: 500 };
         }
 
-        tags.forEach((tag: any) => {
-          postTags.push(tag.tag_id.name);
-        });
-        return { ...post, tags: postTags };
+        return { ...post, tags };
       })
     );
 
@@ -262,19 +258,64 @@ export async function getPostsByUser(uid: string, range: [number, number]) {
   }
 }
 
-export async function getPost(uid: string) {
+export async function getPostsByFavorite(
+  userId: number,
+  range: [number, number]
+) {
   const { data, error } = await supabase
-    .from("posts")
-    .select(`*,user_id: user_id(*)`)
-    .eq("uuid", uid)
-    .limit(1);
+    .from("favorites")
+    .select("post_id(*)")
+    .eq("user_id", userId)
+    .range(range[0], range[1])
+    .order("created_at", { ascending: false });
   if (error) {
     return { error, status: 500 };
   }
 
-  const tags = await getTags(data[0].id);
+  // TODO: 各データのタグを取得
 
-  return { post: { ...data[0], tags }, status: 200 };
+  const { data: countData, error: countError } = await supabase
+    .from("favorites")
+    .select("id", { count: "exact" })
+    .eq("user_id", userId);
+  if (countError) {
+    return { error, status: 500 };
+  }
+
+  return { data, count: countData.length };
+}
+
+export async function getPost(uid: string, userUid: string) {
+  const { data, error } = await supabase
+    .from("posts")
+    .select(`*,user_id: user_id(*)`)
+    .eq("uuid", uid)
+    .single();
+  if (error) {
+    return { error, status: 500 };
+  }
+
+  const tags = await getTags(data.id);
+
+  let isFavorite = false;
+  if (userUid !== "") {
+    const user = await getUserByUid(userUid);
+    if (!user || "id" in user === false) {
+      return { error: "user not found", status: 404 };
+    }
+
+    const { data: favorite, error: favoriteError } = await supabase
+      .from("favorites")
+      .select()
+      .eq("post_id", data.id)
+      .eq("user_id", user.id);
+    if (favoriteError) {
+      return { error: favoriteError, status: 500 };
+    }
+    isFavorite = data ? true : false;
+  }
+
+  return { post: { ...data, tags, isFavorite }, status: 200 };
 }
 
 export async function deletePost(id: number) {
@@ -333,6 +374,51 @@ async function getTags(postId: number) {
     return { error, status: 500 };
   }
 
-  const tags = data.map((tag: any) => tag.tag_id.name);
-  return tags;
+  return data;
+}
+
+export async function getFavorite(postId: number, userId: number) {
+  const { data, error } = await supabase
+    .from("favorites")
+    .select()
+    .eq("post_id", postId)
+    .eq("user_id", userId);
+  if (error) {
+    return { error, status: 500 };
+  }
+
+  return { data, status: 200 };
+}
+
+export async function postFavorite(postId: number, userUid: string) {
+  const user = await getUserByUid(userUid);
+  if (user === null) {
+    return { error: "user not found", status: 404 };
+  }
+  const { data, error } = await supabase
+    .from("favorites")
+    .insert([{ post_id: postId, user_id: user.id }])
+    .select();
+  if (error) {
+    return { error, status: 500 };
+  }
+
+  return { data, status: 200 };
+}
+
+export async function deleteFavorite(postId: number, userUid: string) {
+  const user = await getUserByUid(userUid);
+  if (user === null) {
+    return { error: "user not found", status: 404 };
+  }
+  const { error } = await supabase
+    .from("favorites")
+    .delete()
+    .eq("post_id", postId)
+    .eq("user_id", user.id);
+  if (error) {
+    return { error, status: 500 };
+  }
+
+  return { status: 200 };
 }

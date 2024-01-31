@@ -14,18 +14,16 @@ import MobileHeader from "./MobileHeader";
 const Headers = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({} as UserData);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isPc, setIsPc] = useState(false);
 
   const router = useRouter();
   const logout = async () => {
-    await signOut(auth)
-      .then(() => {
-        router.push(RoutesPath.Login);
-        setIsLoggedIn(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        // TODO: エラー処理
-      });
+    await signOut(auth).then(() => {
+      router.push(RoutesPath.Login);
+      setIsLoggedIn(false);
+    });
   };
 
   useEffect(() => {
@@ -36,6 +34,9 @@ const Headers = () => {
         setIsLoggedIn(false);
       }
     });
+    setIsMobile(window.innerWidth <= 768);
+    setIsTablet(769 < window.innerWidth && window.innerWidth < 1024);
+    setIsPc(1024 <= window.innerWidth);
     return () => unsubscribe();
   }, []);
 
@@ -53,6 +54,10 @@ const Headers = () => {
     }
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    setIsLoggedIn(auth.currentUser?.email ? true : false);
+  }, [auth.currentUser]);
+
   const handleLogo = () => {
     if (isLoggedIn) {
       router.push(RoutesPath.Posts);
@@ -60,25 +65,10 @@ const Headers = () => {
       router.push(RoutesPath.Home);
     }
   };
-  const getWindowWidth = () => {
-    return window.innerWidth;
-  };
-
-  const isMobile = () => {
-    return getWindowWidth() < 768;
-  };
-
-  const isTablet = () => {
-    return getWindowWidth() >= 768 && getWindowWidth() < 1024;
-  };
-
-  const isPC = () => {
-    return getWindowWidth() >= 1024;
-  };
 
   return (
     <>
-      {isMobile() && (
+      {isMobile && (
         <MobileHeader
           handleLogo={handleLogo}
           isLoggedIn={isLoggedIn}
@@ -86,7 +76,7 @@ const Headers = () => {
           user={user}
         />
       )}
-      {isTablet() && (
+      {isTablet && (
         <TabletHeader
           handleLogo={handleLogo}
           isLoggedIn={isLoggedIn}
@@ -94,7 +84,7 @@ const Headers = () => {
           user={user}
         />
       )}
-      {isPC() && (
+      {isPc && (
         <PCHeader
           handleLogo={handleLogo}
           isLoggedIn={isLoggedIn}

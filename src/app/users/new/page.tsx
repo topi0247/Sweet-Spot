@@ -1,5 +1,6 @@
 "use client";
 import RoutesPath from "@/common/RouterPath";
+import Button from "@/ui/Button";
 import { auth, provider } from "@/utils/firebase";
 import { registerUser } from "@/utils/supabaseClient";
 import { signInWithPopup } from "firebase/auth";
@@ -49,9 +50,7 @@ const CreateUser = () => {
               ※無記入の場合、Googleの表示名が使用されます
             </span>
           </div>
-          <button className="p-4 bg-slate-50 hover:bg-orange-900 hover:text-slate-50 transition-all">
-            Googleで新規登録
-          </button>
+          <Button content="Googleで新規登録" onClickEvent={null} />
         </form>
       </section>
     </article>

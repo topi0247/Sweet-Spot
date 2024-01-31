@@ -2,7 +2,7 @@
 
 import Loading from "@/app/loading";
 import { getOGP } from "@/common/GetOgp";
-import Button from "@/components/Button";
+import Button from "@/ui/Button";
 import { OgpData, PostData } from "@/types";
 import { auth } from "@/utils/firebase";
 import {

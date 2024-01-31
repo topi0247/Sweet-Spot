@@ -5,12 +5,12 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../utils/firebase";
 import { useRouter } from "next/navigation";
 import RoutesPath from "@/common/RouterPath";
-import Button from "./Button";
+import Button from "../ui/Button";
 
 const Login = () => {
   const router = useRouter();
   const loginInWithGoogle = () => {
-    signInWithPopup(auth, provider).then(() => {
+    signInWithPopup(auth, provider).then((res) => {
       router.push(RoutesPath.Posts);
     });
   };

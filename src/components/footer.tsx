@@ -1,15 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Footers = () => {
-  const mb = () => {
-    if (window.innerWidth < 768) {
-      return "mb-8";
-    }
-  };
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= 768);
+  }, []);
   return (
-    <footer className={`p-4 text-center ${mb()}`}>@2023 Sweet Spot!</footer>
+    <footer className={`p-4 text-center ${isMobile && "mb-4"}`}>
+      @2023 Sweet Spot!
+    </footer>
   );
 };
 

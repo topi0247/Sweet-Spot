@@ -11,9 +11,9 @@ const Posts = () => {
   const [posts, setPosts] = useState([] as PostData[]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageTabsCount, setPageTabsCount] = useState(0);
-  const isMobile = window.innerWidth <= 768;
-  const isTablet = 769 < window.innerWidth && window.innerWidth < 1024;
-  const isPc = 1024 <= window.innerWidth;
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isPc, setIsPc] = useState(false);
 
   // 初期
   useEffect(() => {
@@ -25,6 +25,9 @@ const Posts = () => {
       }
     };
     fetchData();
+    setIsMobile(window.innerWidth <= 768);
+    setIsTablet(769 < window.innerWidth && window.innerWidth < 1024);
+    setIsPc(1024 <= window.innerWidth);
   }, []);
 
   // ページ遷移

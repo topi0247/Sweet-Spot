@@ -11,7 +11,7 @@ import { PostData, UserData } from "@/types";
 import { getUserByUid } from "@/utils/supabaseClient";
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Button from "@/components/Button";
+import Button from "@/ui/Button";
 
 const MyPage = ({ params }: { params: { uid: string } }) => {
   const searchParams = useSearchParams();

@@ -149,7 +149,9 @@ const Post = ({ params }: { params: { uuid: string } }) => {
             />
             <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
               <p className="text-sm title-font text-gray-500 tracking-widest">
-                {post.tags.join(" ")}
+                {post.tags.map((tag) => (
+                  <span key={tag.id}>{tag.name}</span>
+                ))}
               </p>
               <h2 className="text-gray-900 text-3xl title-font font-medium mb-1">
                 {ogp.title}

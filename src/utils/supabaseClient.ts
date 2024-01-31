@@ -49,7 +49,7 @@ export async function registerUser(
   }
 }
 
-export async function updateUser(id: number, name: string){
+export async function updateUser(id: number, name: string) {
   try {
     const { error } = await supabase
       .from("users")
@@ -199,13 +199,13 @@ export async function getPosts(range: [number, number]) {
     posts = await Promise.all(
       data.map(async (post) => {
         const { data: tags, error: tagError } = await supabase
-        .from("post_tags")
-        .select("tag_id(*)")
-        .eq("post_id", post.id);
+          .from("post_tags")
+          .select("tag_id(*)")
+          .eq("post_id", post.id);
         if (tagError) {
           return { error, status: 500 };
         }
-        
+
         const postTags = [] as { id: number; name: string }[];
         tags.forEach((tag: any) => {
           postTags.push({ id: tag.tag_id.id, name: tag.tag_id.name });
@@ -297,23 +297,22 @@ export async function getPostsByFavorite(
   // 各データのタグを取得
   let posts: PostData[] = [];
   posts = await Promise.all(
-      data.map(async (post: any) => {
-        const { data: tags, error: tagError } = await supabase
-          .from("post_tags")
-          .select("tag_id(*)")
-          .eq("post_id", post.post_id.id);
-        if (tagError) {
-          return { error, status: 500 };
-        }
+    data.map(async (post: any) => {
+      const { data: tags, error: tagError } = await supabase
+        .from("post_tags")
+        .select("tag_id(*)")
+        .eq("post_id", post.post_id.id);
+      if (tagError) {
+        return { error, status: 500 };
+      }
 
-        const postTags = [] as { id: number; name: string }[];
-        tags.forEach((tag: any) => {
-          postTags.push({ id: tag.tag_id.id, name: tag.tag_id.name });
-        });
-        return { ...post.post_id, tags: postTags };
-      })
-    );
-    console.log(posts);
+      const postTags = [] as { id: number; name: string }[];
+      tags.forEach((tag: any) => {
+        postTags.push({ id: tag.tag_id.id, name: tag.tag_id.name });
+      });
+      return { ...post.post_id, tags: postTags };
+    })
+  );
 
   const { data: countData, error: countError } = await supabase
     .from("favorites")
@@ -336,7 +335,18 @@ export async function getPost(uid: string, userUid: string) {
     return { error, status: 500 };
   }
 
-  const tags = await getTags(data.id);
+  const { data: post_tags, error: tagError } = await supabase
+    .from("post_tags")
+    .select("tag_id(*)")
+    .eq("post_id", data.id);
+  if (tagError) {
+    return { error, status: 500 };
+  }
+
+  const tags = [] as { id: number; name: string }[];
+  post_tags.forEach((tag: any) => {
+    tags.push({ id: tag.tag_id.id, name: tag.tag_id.name });
+  });
 
   let isFavorite = false;
   if (userUid !== "") {

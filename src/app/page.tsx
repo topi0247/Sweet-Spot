@@ -36,7 +36,9 @@ const Home = () => {
           />
         </h2>
         <h3 className="text-2xl text-center">
-          オススメチョコレートシェアサイト
+          オススメチョコレート
+          <br className="sm:hidden" />
+          シェアサイト
         </h3>
       </section>
       <section>
@@ -74,14 +76,19 @@ const Home = () => {
       </section>
       <section className="text-center text-xl my-4">
         <p className="my-2">
-          Sweet
-          Spot!はバレンタイン&ホワイトーデーに向け、チョコレートやお菓子を紹介し合うシェアサイトです。
+          Sweet Spot!は
+          <br className="sm:hidden" />
+          チョコレートやお菓子を紹介し合う
+          <br className="sm:hidden" />
+          シェアサイトです。
         </p>
         <p className="my-2">
-          あなたのオススメのチョコレートをシェアしましょう！
+          あなたのオススメのチョコレートを
+          <br className="sm:hidden" />
+          シェアしましょう！
         </p>
       </section>
-      <section className="grid grid-cols-2 m-20 mt-10 gap-10">
+      <section className="flex flex-col sm:grid sm:grid-cols-2 sm:m-20 mt-10 gap-10">
         <div className="bg-orange-100 p-5 pt-5 rounded-2xl">
           <h2 className="text-center text-2xl my-2">ユーザーができること</h2>
           <ul className="m-5 text-center">
@@ -91,7 +98,9 @@ const Home = () => {
           </ul>
           <h4 className="text-center text-sky-400 text-xl">
             <Link href={RoutesPath.Posts}>
-              みんなのオススメをチェックする！
+              みんなのオススメを
+              <br className="sm:hidden" />
+              チェックする！
             </Link>
           </h4>
         </div>

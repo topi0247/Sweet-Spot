@@ -377,8 +377,18 @@ export async function deletePost(id: number) {
   if (tagError) {
     return { error: tagError, status: 500 };
   }
+
+  const { error: favoriteError } = await supabase
+    .from("favorites")
+    .delete()
+    .eq("post_id", id);
+  if (favoriteError) {
+    return { error: favoriteError, status: 500 };
+  }
+
   const { error } = await supabase.from("posts").delete().eq("id", id);
   if (error) {
+    console.log(error);
     return { error, status: 500 };
   }
   return { status: 200 };

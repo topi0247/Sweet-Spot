@@ -35,6 +35,7 @@ export async function registerUser(
         {
           displayName,
           email,
+          uid,
         },
       ]);
 

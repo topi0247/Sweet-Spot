@@ -11,6 +11,12 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Sweet Spot!",
   description: "チョコやお菓子を紹介し合うサイトです",
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    url: "https://sweet-spot-topi.vercel.app/",
+    siteName: "Sweet Spot!",
+  },
 };
 
 export default function RootLayout({

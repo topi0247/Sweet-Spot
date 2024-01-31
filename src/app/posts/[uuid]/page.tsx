@@ -168,15 +168,25 @@ const Post = ({ params }: { params: { uuid: string } }) => {
               <div className="flex mt-6 items-center pb-5 border-b-2 border-orange-900 mb-5"></div>
               <div className="flex justify-between">
                 {showDeleteButton()}
-                <Link
-                  href={post.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded-2xl transition-all"
-                >
-                  サイトへ見に行く
-                </Link>
-                {showFavoriteButton()}
+                <div className="flex justify-between items-center gap-3">
+                  <Link
+                    href={`https://twitter.com/intent/tweet?text=SweetSpot!で見っけ！おいしそう😋&hashtags=SweetSpot_topi&url=https://sweet-spot.vercel.app/posts/${params.uuid}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex ml-auto text-white bg-slate-600 border-0 py-2 px-6 focus:outline-none hover:bg-slate-900 rounded-2xl transition-all"
+                  >
+                    Xに投稿
+                  </Link>
+                  <Link
+                    href={post.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded-2xl transition-all"
+                  >
+                    サイトへ見に行く
+                  </Link>
+                  {showFavoriteButton()}
+                </div>
               </div>
             </div>
           </div>

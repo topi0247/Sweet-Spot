@@ -77,7 +77,7 @@ const Post = ({ params }: { params: { uuid: string } }) => {
   };
 
   const showFavoriteButton = () => {
-    if (!auth.currentUser) return;
+    if (!auth.currentUser || auth.currentUser?.uid === post.user_id.uid) return;
     if (isFavorite) {
       return (
         <button

@@ -169,14 +169,25 @@ const Post = ({ params }: { params: { uuid: string } }) => {
               <div className="flex justify-between">
                 {showDeleteButton()}
                 <div className="flex justify-between items-center gap-3">
-                  <Link
-                    href={`https://twitter.com/intent/tweet?text=SweetSpot!で見っけ！おいしそう😋&hashtags=SweetSpot_topi&url=https://sweet-spot.vercel.app/posts/${params.uuid}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex ml-auto text-white bg-slate-600 border-0 py-2 px-6 focus:outline-none hover:bg-slate-900 rounded-2xl transition-all"
-                  >
-                    Xに投稿
-                  </Link>
+                  {post.user_id?.uid === auth.currentUser?.uid ? (
+                    <Link
+                      href={`https://twitter.com/intent/tweet?text=おすすめはこれ！\n&hashtags=SweetSpot_topi&url=https://sweet-spot-topi.vercel.app/posts/${params.uuid}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex ml-auto text-white bg-slate-600 border-0 py-2 px-6 focus:outline-none hover:bg-slate-900 rounded-2xl transition-all"
+                    >
+                      Xでシェア
+                    </Link>
+                  ) : (
+                    <Link
+                      href={`https://twitter.com/intent/tweet?text=SweetSpot!で見っけ！おいしそう😋&hashtags=SweetSpot_topi&url=https://sweet-spot-topi.vercel.app/posts/${params.uuid}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex ml-auto text-white bg-slate-600 border-0 py-2 px-6 focus:outline-none hover:bg-slate-900 rounded-2xl transition-all"
+                    >
+                      Xでシェア
+                    </Link>
+                  )}
                   <Link
                     href={post.url}
                     target="_blank"

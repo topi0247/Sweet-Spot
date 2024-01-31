@@ -168,7 +168,9 @@ const NewPost = () => {
               デフォルト画像で投稿できます。
             </p>
           )}
-          {image && <Ogp image={image} title={title} />}
+          <div className="w-96 mx-auto max-w-full">
+            {image && <Ogp image={image} title={title} />}
+          </div>
           <label>
             コメント
             <input

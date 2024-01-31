@@ -16,7 +16,7 @@ const TabletHeader = ({
   user: UserData;
 }) => {
   return (
-    <header className="flex justify-between items-center container mx-auto my-10 border-b border-orange-900">
+    <header className="flex justify-between items-center container mx-auto mt-10 border-b border-orange-900">
       <h1 className="p-4 text-3xl">
         <button onClick={() => handleLogo()}>
           <img src="/Sweet Spot!.png" className="object-cover h-12 w-48" />
@@ -37,7 +37,7 @@ const TabletHeader = ({
               <li>
                 <Link
                   className="p-4 hover:bg-slate-200 transition-all rounded-2xl"
-                  href={RoutesPath.Logout}
+                  href={RoutesPath.Signin}
                 >
                   新規登録
                 </Link>

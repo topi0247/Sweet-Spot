@@ -41,7 +41,7 @@ const MobileHeader = ({
           {!isLoggedIn ? (
             <>
               <li className="text-center border-r">
-                <Link className="p-2" href={RoutesPath.Logout}>
+                <Link className="p-2" href={RoutesPath.Signin}>
                   新規登録
                 </Link>
               </li>

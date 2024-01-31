@@ -1,0 +1,9 @@
+@import "./globals.css";
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: var(--theme-color);
+}
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background-color: var(--theme-color);
+}

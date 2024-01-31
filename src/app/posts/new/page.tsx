@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import RoutePath from "@/common/RouterPath";
+import RoutesPath from "@/common/RouterPath";
 import { auth } from "@/utils/firebase";
 import { useRouter } from "next/navigation";
 import { getUserByEmail, postPost } from "@/utils/supabaseClient";
@@ -35,7 +35,7 @@ const NewPost = () => {
         });
       }
     } else {
-      router.push(RoutePath.Login);
+      router.push(RoutesPath.Login);
     }
   };
 
@@ -91,7 +91,7 @@ const NewPost = () => {
     }
 
     postPost(url, comment, user.id, genre, tags, moreComment).then((result) => {
-      router.push(RoutePath.Posts);
+      router.push(RoutesPath.Posts);
     });
   };
 

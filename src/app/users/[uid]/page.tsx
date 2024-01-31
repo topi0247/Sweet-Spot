@@ -24,11 +24,8 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
   );
   const [pageTabsCount, setPageTabsCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const isMobile = window.innerWidth <= 768;
-  const isTablet = 769 < window.innerWidth && window.innerWidth < 1024;
-  const isPc = 1024 <= window.innerWidth;
   const [isResponsiveClass, setIsResponsiveClass] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,9 +42,11 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
       }
     };
     fetchData();
-    if (isMobile) setIsResponsiveClass("flex flex-col gap-4");
-    else if (isTablet) setIsResponsiveClass("grid grid-cols-2 gap-4");
-    else if (isPc) setIsResponsiveClass("grid grid-cols-3 gap-4");
+    if (window.innerWidth <= 768) setIsResponsiveClass("flex flex-col gap-4");
+    else if (769 < window.innerWidth && window.innerWidth < 1024)
+      setIsResponsiveClass("grid grid-cols-2 gap-4");
+    else if (1024 <= window.innerWidth)
+      setIsResponsiveClass("grid grid-cols-3 gap-4");
   }, []);
 
   useEffect(() => {

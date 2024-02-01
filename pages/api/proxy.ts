@@ -12,9 +12,19 @@ const proxyApi = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const response = await fetch(url);
-  const text = await response.text();
+
+  // 文字コード取得
+  const arrayBuffer = await response.arrayBuffer();
+  let decode_text = new TextDecoder().decode(arrayBuffer);
+  const charset = decode_text.match(/<meta[^>]+charset=["']?([^"'>\s]+)/i);
+  if (charset && charset[1] !== "utf-8") {
+    const decoder = new TextDecoder(charset[1]);
+    decode_text = decoder.decode(arrayBuffer);
+  }
+
+  //const text = await response.text();
   res.setHeader("Content-Type", "text/html");
-  res.status(200).send(text);
+  res.status(200).send(decode_text);
 };
 
 export default proxyApi;

@@ -60,7 +60,13 @@ const Post = ({ params }: { params: { uuid: string } }) => {
   const showDeleteButton = () => {
     if (auth.currentUser?.uid === post.user_id.uid) {
       return (
-        <div className="flex gap-2 text-sm">
+        <div className="flex gap-2 text-sm justify-center items-center">
+          <Link
+            href={`/posts/${params.uuid}/edit`}
+            className="border-slate-900 border-solid border-2 px-2 rounded-2xl"
+          >
+            編集
+          </Link>
           <button
             className="border-slate-900 border-solid border-2 px-2 rounded-2xl"
             onClick={handleDelete}

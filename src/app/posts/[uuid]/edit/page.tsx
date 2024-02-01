@@ -4,29 +4,28 @@ import React, { useEffect, useState } from "react";
 import RoutesPath from "@/common/RouterPath";
 import { auth } from "@/utils/firebase";
 import { useRouter } from "next/navigation";
-import { getUserByEmail, postPost } from "@/utils/supabaseClient";
-import "../../../ui/Radio.css";
 import { getOGP } from "@/common/GetOgp";
 import Ogp from "@/components/Ogp";
-import { UserData } from "@/types";
+import { OgpData, PostData, UserData } from "@/types";
 import Button from "@/ui/Button";
+import { getPost, getUserByUid } from "@/utils/supabaseClient";
 
-const NewPost = () => {
-  const [url, setUrl] = useState("");
+const Edit = ({ params }: { params: { uuid: string } }) => {
   const [comment, setComment] = useState("");
   const [moreComment, setMoreComment] = useState("");
   const [user, setUser] = useState({} as UserData);
   const [genre, setGenre] = useState("" as string);
-  const [existUrl, setExitsUrl] = useState(false);
-  const [title, setTitle] = useState("" as string);
-  const [image, setImage] = useState("" as string);
   const [notImage, setNotImage] = useState(false);
   const [tags, setTags] = useState([] as string[]);
+  const [post, setPost] = useState({} as PostData);
+  const [ogp, setOgp] = useState({} as OgpData);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const checkAuth = async () => {
-    if (auth.currentUser && auth.currentUser.email) {
-      const result = await getUserByEmail(auth.currentUser.email);
+    if (auth.currentUser && auth.currentUser.uid) {
+      const result = await getUserByUid(auth.currentUser.uid);
+
       if (result && "id" in result) {
         setUser({
           id: result.id,
@@ -39,78 +38,42 @@ const NewPost = () => {
     }
   };
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const getUser = async () => {
-    if (auth.currentUser?.email) {
-      await getUserByEmail(auth.currentUser.email).then((result) => {
-        if (result && "id" in result) {
-          setUser({
-            id: result.id,
-            uid: result.uid,
-            displayName: result.displayName,
-          });
-        }
-      });
+  const getPostData = async () => {
+    const postData = await getPost(params.uuid, "");
+    if (postData.status === 200) {
+      setPost(postData.post);
+      let ogpData = await getOGP(postData.post.url);
+      if (!ogpData.image) {
+        setNotImage(true);
+        ogpData.image = "/Sweet Spot!.png";
+      }
+      setOgp(ogpData);
+      setComment(postData.post.comment);
+      setMoreComment(postData.post.more_comment);
+      setGenre(postData.post.genre);
+      setTags(
+        postData.post.tags.map((tag: { id: number; name: string }) => tag.name)
+      );
+    } else {
+      alert("編集権限がありません");
+      router.push(RoutesPath.MyPage);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      await getUser();
+      await checkAuth();
+      await getPostData();
     };
-    fetchData();
-  }, []);
 
-  useEffect(() => {
-    if (existUrl) {
-      const getMetadata = async () => {
-        const result = await getOGP(url);
-        setTitle(result.title);
-        if (result.image === "") {
-          setNotImage(true);
-          setImage("/Sweet Spot!.png");
-        } else {
-          setImage(result.image);
-        }
-      };
-      getMetadata();
-    } else {
-      setTitle("");
-      setImage("");
-      setUrl("");
-    }
-  }, [existUrl]);
+    return () => {
+      fetchData();
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isValidURL(url) || tags.length > 3 || comment.length > 10) {
-      return;
-    }
-
-    postPost(url, comment, user.id, genre, tags, moreComment).then((result) => {
-      router.push(RoutesPath.Posts);
-    });
-  };
-
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isValidURL(e.target.value)) {
-      setUrl(e.target.value);
-      setExitsUrl(true);
-    } else {
-      setExitsUrl(false);
-    }
-  };
-
-  const isValidURL = (url: string) => {
-    try {
-      new URL(url);
-      return true;
-    } catch (e) {
-      return false;
-    }
   };
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,24 +107,25 @@ const NewPost = () => {
     }
   };
 
+  if (loading) {
+    return <p>loading...</p>;
+  }
+
   return (
     <section className="w-full mx-auto">
-      <h2 className="text-center text-2xl">投稿する</h2>
+      <h2 className="text-center text-2xl">編集する</h2>
       <div className="bg-orange-100 p-4 w-5/6 mx-auto my-5 rounded-2xl">
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-          <p>*は必須項目です</p>
-          <label>
-            URL*
-            <input
-              type="url"
-              className="w-full rounded-2xl bg-white focus:outline-none p-2"
-              onChange={handleUrlChange}
-              placeholder="https://www.google.com/"
-              required
-            />
-          </label>
-          {title && (
-            <p className="border-solid border-b-2 border-orange-950">{title}</p>
+          <p>
+            URL
+            <span className="bg-orange-200 p-2 rounded-2xl ml-2">
+              {post.url}
+            </span>
+          </p>
+          {ogp.title && (
+            <p className="border-solid border-b-2 border-orange-950">
+              {ogp.title}
+            </p>
           )}
           {notImage && (
             <p>
@@ -171,7 +135,7 @@ const NewPost = () => {
             </p>
           )}
           <div className="w-96 mx-auto max-w-full">
-            {image && <Ogp image={image} title={title} />}
+            {ogp.image && <Ogp image={ogp.image} title={ogp.image} />}
           </div>
           <label>
             コメント
@@ -179,6 +143,7 @@ const NewPost = () => {
               type="text"
               className="w-full rounded-2xl bg-white focus:outline-none p-2"
               onChange={handleCommentChange}
+              value={comment}
             />
             {commentLengthView()}
           </label>
@@ -187,6 +152,7 @@ const NewPost = () => {
             <textarea
               className="w-full rounded-2xl bg-white focus:outline-none p-2 h-48 overflow-y-hidden"
               onChange={handleMoreComment}
+              value={moreComment}
             ></textarea>
           </label>
           <div>
@@ -232,6 +198,7 @@ const NewPost = () => {
               className="w-full bg-white focus:outline-none p-2"
               onChange={handleTags}
               placeholder="チョコ　期間限定　甘さ控えめ"
+              value={tags.join(" ")}
             />
             {tagsLengthView()}
           </label>
@@ -242,4 +209,4 @@ const NewPost = () => {
   );
 };
 
-export default NewPost;
+export default Edit;

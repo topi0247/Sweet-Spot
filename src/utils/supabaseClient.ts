@@ -326,11 +326,11 @@ export async function getPostsByFavorite(
   return { posts, count: countData.length };
 }
 
-export async function getPost(uid: string, userUid: string) {
+export async function getPost(uuid: string, userUid: string) {
   const { data, error } = await supabase
     .from("posts")
     .select(`*,user_id: user_id(*)`)
-    .eq("uuid", uid)
+    .eq("uuid", uuid)
     .single();
   if (error) {
     return { error, status: 500 };

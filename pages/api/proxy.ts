@@ -13,7 +13,7 @@ const proxyApi = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const response = await fetch(url);
 
-  // 文字コード取得
+  // 文字コード取得とデコード
   const arrayBuffer = await response.arrayBuffer();
   let decode_text = new TextDecoder().decode(arrayBuffer);
   const charset = decode_text.match(/<meta[^>]+charset=["']?([^"'>\s]+)/i);
@@ -22,7 +22,6 @@ const proxyApi = async (req: NextApiRequest, res: NextApiResponse) => {
     decode_text = decoder.decode(arrayBuffer);
   }
 
-  //const text = await response.text();
   res.setHeader("Content-Type", "text/html");
   res.status(200).send(decode_text);
 };

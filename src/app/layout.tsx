@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     locale: "ja_JP",
     url: "https://sweet-spot-topi.vercel.app/",
     siteName: "Sweet Spot!",
+    images: ["https://sweet-spot-topi.vercel.app/Sweet Spot!.png"],
   },
 };
 

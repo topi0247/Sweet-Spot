@@ -36,25 +36,29 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
         "アカウント作成に失敗している可能性があります。\nお手数おかけしますがもう一度作成してみてください。\n同一アカウントであればデータは引き継がれます。"
       );
       router.push(RoutesPath.Signin);
+    } else {
+      const fetchData = async () => {
+        const userData = await getUserByUid(uid);
+        if (userData) {
+          setUser(userData);
+          setLoading(false);
+        } else {
+          alert("アカウントが見つかりませんでした。");
+          router.push(RoutesPath.Posts);
+        }
+        const result = await getPostsRangeByUser(1, uid);
+        if (result) {
+          setPosts(result.posts);
+          setPageTabsCount(result.pageTabsCount);
+        }
+      };
+      fetchData();
+      if (window.innerWidth <= 768) setIsResponsiveClass("flex flex-col gap-4");
+      else if (769 < window.innerWidth && window.innerWidth < 1024)
+        setIsResponsiveClass("grid grid-cols-2 gap-4");
+      else if (1024 <= window.innerWidth)
+        setIsResponsiveClass("grid grid-cols-3 gap-4");
     }
-    const fetchData = async () => {
-      const userData = await getUserByUid(uid);
-      if (userData) {
-        setUser(userData);
-        setLoading(false);
-      }
-      const result = await getPostsRangeByUser(1, uid);
-      if (result) {
-        setPosts(result.posts);
-        setPageTabsCount(result.pageTabsCount);
-      }
-    };
-    fetchData();
-    if (window.innerWidth <= 768) setIsResponsiveClass("flex flex-col gap-4");
-    else if (769 < window.innerWidth && window.innerWidth < 1024)
-      setIsResponsiveClass("grid grid-cols-2 gap-4");
-    else if (1024 <= window.innerWidth)
-      setIsResponsiveClass("grid grid-cols-3 gap-4");
   }, []);
 
   useEffect(() => {
@@ -93,13 +97,17 @@ const MyPage = ({ params }: { params: { uid: string } }) => {
   const onClickDeleteUser = async () => {
     if (!auth.currentUser) return;
     const res = confirm("本当にアカウントを削除しますか？");
+    console.log(res);
     if (res.valueOf() === true) {
       const result = await deleteUserByUid(uid);
       if (result.status === 200) {
         deleteUser(auth.currentUser).then(() => {
           alert("アカウントを削除しました。");
-          router.push(RoutesPath.Signin);
+          router.push(RoutesPath.Posts);
         });
+      } else {
+        console.log(result);
+        alert("アカウントの削除に失敗しました。");
       }
     }
   };

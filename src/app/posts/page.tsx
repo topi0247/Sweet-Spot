@@ -6,7 +6,6 @@ import { PostData, UserData } from "@/types";
 import React, { useEffect, useState } from "react";
 import Loading from "../loading";
 import { getPostsRange } from "@/components/GetPostsRange";
-import Button from "@/ui/Button";
 import { getUserByUid, updateUser } from "@/utils/supabaseClient";
 import { auth } from "@/utils/firebase";
 import Modal from "@/components/Modal";

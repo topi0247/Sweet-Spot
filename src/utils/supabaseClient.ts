@@ -1,5 +1,6 @@
 import { PostData } from "@/types";
 import { createClient } from "@supabase/supabase-js";
+import { get } from "http";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -131,26 +132,61 @@ export async function getUserByUid(uid: string) {
 }
 
 export async function deleteUserByUid(uid: string) {
+  const user = await getUserByUid(uid);
+  if (!user) {
+    return { error: "user not found", status: 404 };
+  }
   // いいねの削除
   const { error: favoriteError } = await supabase
     .from("favorites")
     .delete()
-    .eq("user_id", uid);
+    .eq("user_id", user.id);
   if (favoriteError) {
     return { error: favoriteError, status: 500 };
   }
 
-  // 投稿の削除
+  // 投稿に紐づいたいいね削除
+  const { data: posts, error: postsError } = await supabase
+    .from("posts")
+    .select("id")
+    .eq("user_id", user.id);
+  if (postsError) {
+    return { error: postsError, status: 500 };
+  }
+  const { error: favoriteError2 } = await supabase
+    .from("favorites")
+    .delete()
+    .in(
+      "post_id",
+      posts.map((post: any) => post.id)
+    );
+  if (favoriteError2) {
+    return { error: favoriteError2, status: 500 };
+  }
+
+  // 投稿に紐づいたタグの削除
+  const { error: tagError } = await supabase
+    .from("post_tags")
+    .delete()
+    .in(
+      "post_id",
+      posts.map((post: any) => post.id)
+    );
+  if (tagError) {
+    return { error: tagError, status: 500 };
+  }
+
+  // 投稿削除
   const { error: postError } = await supabase
     .from("posts")
     .delete()
-    .eq("user_id", uid);
+    .eq("user_id", user.id);
   if (postError) {
     return { error: postError, status: 500 };
   }
 
   // ユーザーの削除
-  const { error } = await supabase.from("users").delete().eq("uid", uid);
+  const { error } = await supabase.from("users").delete().eq("id", user.id);
   if (error) {
     return { error, status: 500 };
   }

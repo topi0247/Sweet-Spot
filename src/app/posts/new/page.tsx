@@ -156,6 +156,7 @@ const NewPost = () => {
               type="url"
               className="w-full rounded-2xl bg-white focus:outline-none p-2"
               onChange={handleUrlChange}
+              required
             />
           </label>
           {title && (

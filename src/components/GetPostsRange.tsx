@@ -1,6 +1,10 @@
-import { getPosts, getPostsByFavorite, getPostsByUser } from "@/utils/supabaseClient";
+import {
+  getPosts,
+  getPostsByFavorite,
+  getPostsByUser,
+} from "@/utils/supabaseClient";
 
-const postsAmount = 20;
+const postsAmount = 15;
 
 export const getPostsRange = async (currentPage: number) => {
   const { start, end } = page(currentPage);
@@ -23,19 +27,22 @@ export const getPostsRangeByUser = async (currentPage: number, uid: string) => {
   }
 };
 
-export const getPostsRangeByFavorite = async (currentPage: number, user_id: number) => {
+export const getPostsRangeByFavorite = async (
+  currentPage: number,
+  user_id: number
+) => {
   const { start, end } = page(currentPage);
   const fetchedPosts = await getPostsByFavorite(user_id, [start, end]);
-  if(fetchedPosts && fetchedPosts.posts){
+  if (fetchedPosts && fetchedPosts.posts) {
     const posts = fetchedPosts.posts;
     const pageTabsCount = Math.ceil(fetchedPosts.count / postsAmount);
-    return {posts, pageTabsCount};
+    return { posts, pageTabsCount };
   }
-}
+};
 
 const page = (currentPage: number) => {
   const page = currentPage - 1;
   const start = page * postsAmount;
   const end = page * postsAmount + (postsAmount - 1);
-  return {start, end}
-}
+  return { start, end };
+};

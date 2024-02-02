@@ -33,19 +33,19 @@ const MobileHeader = ({
       </header>
       <nav className="fixed bottom-0 w-full border-t border-orange-900 bg-white z-10">
         <ul className="grid grid-cols-3 items-center ">
-          <li className="text-center border-r">
+          <li className="text-center border-r py-2">
             <Link className="p-2" href={RoutesPath.Posts}>
               投稿一覧
             </Link>
           </li>
           {!isLoggedIn ? (
             <>
-              <li className="text-center border-r">
+              <li className="text-center border-r py-2">
                 <Link className="p-2" href={RoutesPath.Signin}>
                   新規登録
                 </Link>
               </li>
-              <li className="text-center">
+              <li className="text-center py-2">
                 <Link className="p-2" href={RoutesPath.Login}>
                   ログイン
                 </Link>
@@ -59,7 +59,7 @@ const MobileHeader = ({
                 </Link>
               </li>
               <li className="text-center">
-                <div className="relative w-full">
+                <div className="relative w-full py-2">
                   <button
                     className="p-2"
                     onClick={() => toggleMenu(!isMenuOpen)}

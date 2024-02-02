@@ -2,10 +2,14 @@
 
 import Pagination from "@/components/Pagination";
 import PostCard from "@/components/PostCard";
-import { PostData } from "@/types";
+import { PostData, UserData } from "@/types";
 import React, { useEffect, useState } from "react";
 import Loading from "../loading";
 import { getPostsRange } from "@/components/GetPostsRange";
+import Button from "@/ui/Button";
+import { getUserByUid, updateUser } from "@/utils/supabaseClient";
+import { auth } from "@/utils/firebase";
+import Modal from "@/components/Modal";
 
 const Posts = () => {
   const [posts, setPosts] = useState([] as PostData[]);
@@ -14,6 +18,9 @@ const Posts = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [isPc, setIsPc] = useState(false);
+  const [isDisplayName, setIsDisplayName] = useState(true);
+  const [user, setUser] = useState({} as UserData);
+  const [displayName, setDisplayName] = useState("");
 
   // 初期
   useEffect(() => {
@@ -22,6 +29,16 @@ const Posts = () => {
       if (result) {
         setPosts(result.newPosts);
         setPageTabsCount(result.pageTabsCount);
+      }
+      if (auth.currentUser?.uid) {
+        const user = await getUserByUid(auth.currentUser?.uid);
+        if (user) {
+          setUser(user);
+
+          if (!user.displayName) {
+            setIsDisplayName(false);
+          }
+        }
       }
     };
     fetchData();
@@ -42,6 +59,15 @@ const Posts = () => {
     fetchData();
   }, [currentPage]);
 
+  const modalOnSubmitEvent = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const result = await updateUser(user.id, displayName);
+    if (result.status === 200) {
+      alert("表示名を変更しました");
+      setIsDisplayName(true);
+    }
+  };
+
   const page = () => {
     let className = "";
     if (isMobile) className = "flex flex-col gap-4";
@@ -60,15 +86,23 @@ const Posts = () => {
   };
 
   return (
-    <article>
-      <h2 className="text-center text-2xl m-5">投稿一覧</h2>
-      {posts.length === 0 ? <Loading /> : page()}
-      <Pagination
-        pageNumber={currentPage}
-        totalCount={pageTabsCount}
-        setCurrentPage={setCurrentPage}
-      />
-    </article>
+    <>
+      {!isDisplayName && (
+        <Modal
+          onSubmitEvent={modalOnSubmitEvent}
+          setDisplayName={setDisplayName}
+        />
+      )}
+      <article>
+        <h2 className="text-center text-2xl m-5">投稿一覧</h2>
+        {posts.length === 0 ? <Loading /> : page()}
+        <Pagination
+          pageNumber={currentPage}
+          totalCount={pageTabsCount}
+          setCurrentPage={setCurrentPage}
+        />
+      </article>
+    </>
   );
 };
 

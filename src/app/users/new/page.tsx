@@ -14,7 +14,7 @@ const CreateUser = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await signInWithPopup(auth, provider).then((result) => {
-      if (displayName === "" && result.user.displayName) {
+      if (!displayName && result.user.displayName) {
         setDisplayName(result.user.displayName);
       }
       if (result.user.email) {
@@ -38,17 +38,15 @@ const CreateUser = () => {
         >
           <div className="flex flex-col">
             <label>
-              表示名
+              表示名*
               <br />
             </label>
             <input
               type="text"
               className="bg-slate-50 p-1 hover:outline-none focus:outline-none"
               onChange={handleChange}
+              required
             />
-            <span className="text-sm text-gray-500">
-              ※無記入の場合、Googleの表示名が使用されます
-            </span>
           </div>
           <Button content="Googleで新規登録" onClickEvent={null} />
         </form>

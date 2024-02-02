@@ -52,13 +52,14 @@ const MyPageEdit = ({ params }: { params: { uid: string } }) => {
         >
           <div className="flex flex-col">
             <label>
-              表示名
+              表示名*
               <br />
             </label>
             <input
               type="text"
               className="bg-slate-50 p-1 hover:outline-none focus:outline-none"
               onChange={handleChange}
+              required
             />
           </div>
           <Button content="変更する" onClickEvent={null} />

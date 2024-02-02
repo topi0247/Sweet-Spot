@@ -130,6 +130,34 @@ export async function getUserByUid(uid: string) {
   }
 }
 
+export async function deleteUserByUid(uid: string) {
+  // いいねの削除
+  const { error: favoriteError } = await supabase
+    .from("favorites")
+    .delete()
+    .eq("user_id", uid);
+  if (favoriteError) {
+    return { error: favoriteError, status: 500 };
+  }
+
+  // 投稿の削除
+  const { error: postError } = await supabase
+    .from("posts")
+    .delete()
+    .eq("user_id", uid);
+  if (postError) {
+    return { error: postError, status: 500 };
+  }
+
+  // ユーザーの削除
+  const { error } = await supabase.from("users").delete().eq("uid", uid);
+  if (error) {
+    return { error, status: 500 };
+  }
+
+  return { status: 200 };
+}
+
 export async function postPost(
   url: string,
   comment: string,

@@ -33,7 +33,14 @@ export default function RootLayout({
         <div className="flex flex-col min-h-screen">
           <Headers />
           <Suspense fallback={<Loading />}>
-            <main className="flex-grow container mx-auto p-4">{children}</main>
+            <main className="flex-grow container mx-auto p-4">
+              <p className="text-center p-2 py-4 bg-red-200 rounded-2xl border-red-600 border-solid border">
+                現在サービス改良中です。利用はできますが内容が変更されることがあります。
+                <br />
+                あらかじめご了承くださいませ。
+              </p>
+              {children}
+            </main>
           </Suspense>
           <Footers />
         </div>

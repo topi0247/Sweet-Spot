@@ -27,7 +27,7 @@ const Pagination = ({
             <PaginationItem
               component={MuiLink}
               {...item}
-              className="rounded-none"
+              className="rounded-2xl"
             />
           </button>
         )}

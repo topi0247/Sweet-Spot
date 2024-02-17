@@ -5,6 +5,7 @@ import Headers from "@/components/Header";
 import Footers from "@/components/Footer";
 import { Suspense } from "react";
 import Loading from "./loading";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
           </Suspense>
           <Footers />
         </div>
+        <Analytics />
       </body>
     </html>
   );
